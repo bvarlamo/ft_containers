@@ -6,7 +6,7 @@
 /*   By: bvarlamo <bvarlamo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 09:28:09 by bvarlamo          #+#    #+#             */
-/*   Updated: 2022/10/11 17:02:09 by bvarlamo         ###   ########.fr       */
+/*   Updated: 2022/10/12 17:34:58 by bvarlamo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <memory>
 #include "ft.hpp"
 #include <iterator>
+#include <iostream>
 
 namespace	ft
 {
@@ -54,12 +55,13 @@ namespace	ft
 
 			vector(const vector& x)
 			{
-				_alloc = x._alloc;
-				_data = _alloc.allocate(0);
-				_size = 0;
-				_capacity = 0;
-				for (size_type i = 0; i < x._size; i++)
-					insert(&_data[i], x._data[i]);
+				_alloc = x.get_allocator();
+				_data = _alloc.allocate(x.capacity());
+				_end = _data;
+				_size = x.size();
+				_capacity = x.capacity();
+				for (size_type i = 0; i < _size; i++)
+					_alloc.construct(&_end[i], x._data[i]);
 			}
 
 			explicit vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
@@ -107,6 +109,20 @@ namespace	ft
 				if (_data)
 					_alloc.deallocate(_data, _size);
 			}
+
+			vector& operator=(const vector& x)
+			{
+				_alloc.destroy(_data);
+				_alloc.deallocate(_data, _capacity);
+				_alloc = x.get_allocator();
+				_data = _alloc.allocate(_capacity);
+				_end = _data;
+				_size = x.size();
+				_capacity = x.capacity();
+				for (size_type i = 0; i < _size; i++)
+					_alloc.construct(&_end[i], x._data[i]);
+				return *this;
+			}
 	
 			void push_back(const T& value)
 			{
@@ -118,7 +134,19 @@ namespace	ft
 			{
 				difference_type index = it - begin();
 				if (_size == _capacity)
-					grow();
+				{
+					_capacity = (_capacity) ? (_capacity * 2) : 1;
+					T* new_data = _alloc.allocate(_capacity);
+					for (size_type i = 0; i < _size; ++i)
+						new_data[i] = _data[i];
+					size_type new_size = _size;
+					size_type new_capacity = _capacity;
+					if (_data)
+						_alloc.deallocate(_data, _size);
+					_data = new_data;
+					_size = new_size;
+					_capacity = new_capacity;
+				}
 				for (difference_type i = _size - 1; i >= index; --i)
 					_alloc.construct(&_data[i + 1], _data[i]);
 				_data[index] = value;
@@ -135,6 +163,8 @@ namespace	ft
 					throw (std::length_error("count to big"));
 				else
 				{
+					if (_size + count > _capacity)
+						reserve(_size + count);
 					while (count > 0)
 					{
 						_end = _data;
@@ -153,6 +183,12 @@ namespace	ft
 				if (first == last)
 					return (iterator)pos;
 				difference_type index = pos - begin();
+				InputIt it = first;
+				size_type i = 0;
+				while (&it[i] != last)
+					i++;
+				if (_size + i > _capacity)
+					reserve(_size + i);
 				while (first != last)
 				{
 					_end = _data;
@@ -161,21 +197,6 @@ namespace	ft
 					first++;
 				}
 				return &_data[pos - begin()];
-			}
-			
-			void grow(void)
-			{
-				_capacity = (_capacity) ? (_capacity * 2) : 1;
-				T* new_data = _alloc.allocate(_capacity);
-				for (size_type i = 0; i < _size; ++i)
-					new_data[i] = _data[i];
-				size_type new_size = _size;
-				size_type new_capacity = _capacity;
-				if (_data)
-					_alloc.deallocate(_data, _size);
-				_data = new_data;
-				_size = new_size;
-				_capacity = new_capacity;
 			}
 			
 			iterator begin(void)
@@ -236,11 +257,6 @@ namespace	ft
 				return allocator_type().max_size(); 
 			}
 
-			// void resize(size_type n, value_type val = value_type())
-			// {
-
-			// }
-
 			size_type capacity() const
 			{
 				return(_capacity);
@@ -253,20 +269,6 @@ namespace	ft
 					it++;
 				return (*it);
 			}
-
-			vector& operator= (const vector& x)
-			{
-				_alloc.destroy(_data);
-				_alloc.deallocate(_data, _capacity);
-				_size = x._size;
-				_capacity = x._capacity;
-				_alloc = x._alloc;
-				_data = _alloc.allocate(_size);
-				_end = _data;
-				for (size_type i = 0; i < _size; i++)
-					_alloc.construct(&_end[i], x._data[i]);
-				return *this;
-			}
 	
 			void resize (size_type n, value_type val = value_type())
 			{
@@ -276,8 +278,6 @@ namespace	ft
 				{
 					while (this->size() > n)
 					{
-						if (val)
-							;
 						_end = end();
 						--_end;
 						_alloc.destroy(_end);
@@ -286,11 +286,9 @@ namespace	ft
 				}
 				else
 				{
-					while (_size < n)
-					{
-						_end = end();
-						insert(_end, val);
-					}
+					reserve(n);
+					_end = _data;
+					insert(&_end[_size], n - _size, val);
 				}
 			}
 
@@ -385,13 +383,52 @@ namespace	ft
 			typename ft::enable_if<!ft::is_integrals<InputIterator>::value, InputIterator>::type* = nullptr)
 			{
 				clear();
-				insert(begin(), first, last);
+				InputIterator it = first;
+				size_type i = 0;
+				_end = _data;
+				while (it != last)
+				{
+					if (it == &_end[i] || last == &_end[i])
+						return ;
+					i++;
+					it++;
+				}
+				if (_capacity < i)
+				{
+					_alloc.deallocate(_data, _capacity);
+					_data = _alloc.allocate(i);
+					_capacity = i;
+				}
+				_end = _data;
+				while (first != last)
+				{
+					_alloc.construct(_end, *first);
+					_end++;
+					first++;
+					i--;
+					_size++;
+				}
 			}
 
 			void	assign (size_type n, const value_type& var)
 			{
 				clear();
-				insert(begin(), n, var);
+				if (n == 0)
+					return ;
+				if (_capacity < n)
+				{
+					_alloc.deallocate(_data, _capacity);
+					_data = _alloc.allocate(n);
+					_capacity = n;
+				}
+				_end = _data;
+				while (n)
+				{
+					_alloc.construct(_end, var);
+					_end++;
+					n--;
+					_size++;
+				}
 			}
 
 			void	clear()
@@ -533,17 +570,7 @@ namespace	ft
 	template <class T, class Alloc>
 	void	swap (vector<T, Alloc>& x, vector<T, Alloc>& y)
 	{
-		T*	tmp_data = x._data;
-		std::size_t	tmp_s = x._size;
-		std::size_t	tmp_c = x._capacity;
-
-		x._data = y._data;
-		x._size = y._size;
-		x._capacity = y._capacity;
-
-		y._data = tmp_data;
-		y._size = tmp_s;
-		y._capacity = tmp_c;
+		x.swap(y);
 	}
 };
 

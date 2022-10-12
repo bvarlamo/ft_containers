@@ -6,33 +6,33 @@
 
 int	main(void)
 {
-  ft::vector<int> foo (3,100);   // three ints with a value of 100
-  ft::vector<int> bar (5,200);   // five ints with a value of 200
+ 	int range_array1[] = { 74, 569, -8822, 8515, 5 };
 
-	ft::vector<int>::iterator it1 = foo.begin();
-	ft::vector<int>::iterator it2 = bar.begin();
+        std::vector<int> range_array(&range_array1[0], &range_array1[5]);
+		ft::vector<int> range_arrayf(&range_array1[0], &range_array1[5]);
 
-  foo.swap(bar);
+        std::vector<int>::iterator stl_iterator = range_array.begin();
+        ft::vector<int>::iterator ft_iterator = range_arrayf.begin();
 
-  std::cout << "foo contains:";
-  for (ft::vector<int>::iterator it = foo.begin(); it!=foo.end(); ++it)
-    std::cout << ' ' << *it;
-  std::cout << '\n';
+        std::vector<int> stl_range_vector(stl_iterator, stl_iterator + 5);
+        ft::vector<int> ft_range_vector(ft_iterator, ft_iterator + 5);
 
-  std::cout << "bar contains:";
-  for (ft::vector<int>::iterator it = bar.begin(); it!=bar.end(); ++it)
-    std::cout << ' ' << *it;
-  std::cout << '\n';
+        
+        std::vector<int> stl_assign_vector = stl_range_vector;
+        ft::vector<int> ft_assign_vector = ft_range_vector;
 
-   std::cout << "foo contains:";
- 
-    std::cout << ' ' << *it1;
-  std::cout << '\n';
 
-  std::cout << "bar contains:";
+	for (std::vector<int>::iterator it = stl_assign_vector.begin(); it != stl_assign_vector.end(); it++)
+	{
+		std::cout<< *it << " ";
+	}
+	std::cout << std::endl;
 
-    std::cout << ' ' << *it2;
-  std::cout << '\n';
+	for (ft::vector<int>::iterator it = ft_assign_vector.begin(); it != ft_assign_vector.end(); it++)
+	{
+		std::cout<< *it << " ";
+	}
+	std::cout << std::endl;
 
 	return 0;
 }
