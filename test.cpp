@@ -80,6 +80,7 @@ int main(int argc, char** argv) {
 		{
 			const int idx = rand() % COUNT;
 			vector_buffer.at(idx);
+			
 			std::cerr << "Error: THIS VECTOR SHOULD BE EMPTY!!" <<std::endl;
 		}
 	}

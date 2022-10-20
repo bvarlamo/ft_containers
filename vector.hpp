@@ -6,7 +6,7 @@
 /*   By: bvarlamo <bvarlamo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 09:28:09 by bvarlamo          #+#    #+#             */
-/*   Updated: 2022/10/12 17:34:58 by bvarlamo         ###   ########.fr       */
+/*   Updated: 2022/10/17 17:38:47 by bvarlamo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -307,7 +307,7 @@ namespace	ft
 					size_type new_size = _size;
 					size_type new_capacity = n;
 					if (_data)
-						_alloc.deallocate(_data, _size);
+						_alloc.deallocate(_data, _capacity);
 					_data = new_data;
 					_size = new_size;
 					_capacity = new_capacity;
