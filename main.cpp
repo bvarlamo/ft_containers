@@ -4,18 +4,38 @@
 #include "ft.hpp"
 #include <string>
 #include <map>
+#include "map.hpp"
 
 int	main(void)
 {
-	std::map <int, int> a;
-	ft::pair <int,int> foo;
-	ft::pair <int,int> bar;
+	// std::map<std::string, std::string> a;
+	// a["b"] = "2";
+	// a["a"] = "1";
+	// a["c"] = "3";
+	// std::map<std::string, std::string>::iterator it = a.begin();
+	// std::map<std::string, std::string>::iterator end = a.end();
+	// for (; it != end; it++)
+	// 	std::cout<< it->first << ": " << it->second << std::endl;
+	// std::cout<< a["b"] << ": " << a["a"] << ": " << a["c"] << std::endl;
+	// ft::pair<std::string, std::string> a("a", "1");
+	ft::map<std::string, std::string> c;
+	ft::map<std::string, std::string> b;
+	b.insert(ft::pair<std::string, std::string>("a", "1"));
+	// b.print();
+	b.insert(ft::pair<std::string, std::string>("b", "2"));
+	// b.print();
+	b.insert(ft::pair<std::string, std::string>("c", "3"));
+	// b.print();
 
-	foo = ft::make_pair (10,20);
-	bar = ft::make_pair (10.5,'A'); // ok: implicit conversion from pair<double,char>
+	// std::map <int, int> a;
+	// ft::pair <int,int> foo;
+	// ft::pair <int,int> bar;
 
-	std::cout << "foo: " << foo.first << ", " << foo.second << '\n';
-	std::cout << "bar: " << bar.first << ", " << bar.second << '\n';
+	// foo = ft::make_pair (10,20);
+	// bar = ft::make_pair (10.5,'A'); // ok: implicit conversion from pair<double,char>
+
+	// std::cout << "foo: " << foo.first << ", " << foo.second << '\n';
+	// std::cout << "bar: " << bar.first << ", " << bar.second << '\n';
  	// int range_array1[] = { 74, 569, -8822, 8515, 5 };
 
     //     std::vector<int> range_array(&range_array1[0], &range_array1[5]);
