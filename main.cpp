@@ -4,10 +4,29 @@
 #include "ft.hpp"
 #include <string>
 #include <map>
+#include <iterator>
 #include "map.hpp"
 
 int	main(void)
 {
+	// ft::vector<std::string> a;
+	// a.insert(a.begin(),"c");
+	// a.insert(a.begin(),"b");
+	// a.insert(a.begin(),"a");
+	// ft::vector<std::string>::reverse_iterator re = a.rbegin();
+	// re++;
+	// std::cout<< *re <<std::endl;
+
+	// std::vector<std::string> s;
+	// s.insert(s.begin(),"c");
+	// s.insert(s.begin(),"b");
+	// s.insert(s.begin(),"a");
+	// std::vector<std::string>::reverse_iterator rev = s.rbegin();
+	// rev++;
+	// std::cout<< *rev <<std::endl;
+
+
+
 	// std::map<std::string, std::string> a;
 	// a["b"] = "2";
 	// a["a"] = "1";
@@ -20,11 +39,57 @@ int	main(void)
 	// ft::pair<std::string, std::string> a("a", "1");
 	ft::map<std::string, std::string> c;
 	ft::map<std::string, std::string> b;
-	b.insert(ft::pair<std::string, std::string>("a", "1"));
-	// b.print();
-	b.insert(ft::pair<std::string, std::string>("b", "2"));
-	// b.print();
-	b.insert(ft::pair<std::string, std::string>("c", "3"));
+
+	// // b.insert(ft::pair<std::string, std::string>("a", "1"));
+	// // b.print();
+	// // b.insert(ft::pair<std::string, std::string>("b", "2"));
+	// // b.print();
+	// // b.insert(ft::pair<std::string, std::string>("c", "3"));
+
+	std::cout<< (b.insert(ft::pair<std::string, std::string>("a", "1"))).first->second <<std::endl;
+	std::cout<< (b.insert(ft::pair<std::string, std::string>("b", "2"))).first->second <<std::endl;
+	std::cout<< (b.insert(ft::pair<std::string, std::string>("c", "3"))).first->second <<std::endl;
+	
+	ft::map<std::string, std::string>::reverse_iterator it = b.rbegin();
+	// it++;
+	std::cout<< it->first <<std::endl;
+	ft::map<std::string, std::string>::reverse_iterator itt;
+	itt = it;
+	std::cout<< "aa" <<std::endl;
+	std::cout<< (++it)->first <<std::endl;
+	std::cout<< "aa" <<std::endl;
+	std::cout<< (it++)->first <<std::endl;
+	std::cout<< itt->first <<std::endl;
+	std::cout<< (it--)->first <<std::endl;
+	std::cout<< (--it)->first <<std::endl;
+	*it++;
+	*it--;
+	std::cout<< it->first <<std::endl;
+	
+	// std::cout<< it->first <<std::endl;
+
+	std::map<std::string, std::string> d;
+	std::map<std::string, std::string> f;
+
+	std::cout<< (f.insert(std::pair<std::string, std::string>("a", "1"))).first->second <<std::endl;
+	std::cout<< (f.insert(std::pair<std::string, std::string>("b", "2"))).first->second <<std::endl;
+	std::cout<< (f.insert(std::pair<std::string, std::string>("c", "3"))).first->second <<std::endl;
+	
+
+	std::map<std::string, std::string>::reverse_iterator it1 = f.rbegin();
+	std::map<std::string, std::string>::reverse_iterator it1t;
+	it1t = it1;
+
+	std::cout<< (++it1)->first <<std::endl;
+	std::cout<< (it1++)->first <<std::endl;
+	std::cout<< it1t->first <<std::endl;
+	std::cout<< (it1--)->first <<std::endl;
+	std::cout<< (--it1)->first <<std::endl;
+	*it1++;
+	*it1--;
+	std::cout<< it1->first <<std::endl;
+
+	
 	// b.print();
 
 	// std::map <int, int> a;

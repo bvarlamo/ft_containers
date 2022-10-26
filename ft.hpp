@@ -6,12 +6,76 @@
 /*   By: bvarlamo <bvarlamo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 12:47:07 by bvarlamo          #+#    #+#             */
-/*   Updated: 2022/10/21 18:27:21 by bvarlamo         ###   ########.fr       */
+/*   Updated: 2022/10/26 17:55:07 by bvarlamo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_HPP
 #define FT_HPP
+
+// namespace ft
+// {
+// 	template <class _value, class _compare, class _alloc>
+// 	class	tree
+// 	{
+// 		_value*			data;
+// 		bool			isred;
+// 		_alloc			alloc;
+// 		std::size_t		size;
+
+// 		node*		left;
+// 		node*		right;
+// 		node*		p;
+
+// 		node(allocator_type _alloc, value_type _data, node* _p)
+// 		{
+// 			// std::cout<< "node constructor" << std::endl;
+// 			alloc = _alloc;
+// 			data = alloc.allocate(1);
+// 			alloc.construct(data, _data.first, _data.second);
+// 			left = NULL;
+// 			right = NULL;
+// 			isred = false;
+// 			p = _p;
+// 			// std::cout<< "----" << data->first << "----" << data->second <<std::endl;
+// 		}
+
+// 		~node()
+// 		{
+// 			// std::cout<< "node destructor" << std::endl;
+// 			_alloc.destroy(data);
+// 			_alloc.deallocate(data, 1);
+
+// 		}
+// 		public:
+// 			ft::pair<_value,bool> insert (const _value& val)
+// 			{
+// 				if (root == NULL)
+// 				{
+// 					root = new node(_alloc, val, NULL);
+// 					current = &root;
+// 					size++;
+// 					return (ft::pair<value_type*, bool>((*current)->data, true));
+// 				}
+// 				current = &root;
+// 				node *p;
+// 				while (*current != NULL)
+// 				{
+// 					p = *current;
+// 					if ((*current)->data->first == val.first)
+// 						return(ft::pair<value_type*, bool>((*current)->data, false));
+// 					else if (value_compare(_comp).comp((*current)->data->first, val.first))
+// 						current = &(*current)->right;
+// 					else
+// 						current = &(*current)->left;
+// 				}
+// 				*current = new node(_alloc, val, p);
+// 				size++;
+// 				return (ft::pair<value_type*, bool>((*current)->data, true));
+// 			}
+// 	};
+// }
+
 
 namespace ft
 {
@@ -141,6 +205,11 @@ namespace ft
 	struct random_access_iterator_tag {};
 }
 
+namespace ft
+{
+	struct bidirectional_iterator_tag {};
+}
+
 namespace ft 
 {
     template <class Iterator>
@@ -159,18 +228,18 @@ namespace ft
 		typedef T									value_type;
         typedef T*            						pointer;
         typedef T&            						reference;
-        typedef ptrdiff_t							difference_type;
-		typedef ft::random_access_iterator_tag 		iterator_category;
+        typedef std::ptrdiff_t							difference_type;
+		typedef ft::random_access_iterator_tag		iterator_category;
     };
 
 	template <class T>
     struct iterator_traits<const T*>
 	{
-        typedef ptrdiff_t							difference_type;
+        typedef std::ptrdiff_t							difference_type;
 		typedef T									value_type;
         typedef const T*            				pointer;
         typedef const T&            				reference;
-		typedef ft::random_access_iterator_tag 		iterator_category;
+		typedef ft::random_access_iterator_tag		iterator_category;
     };
 }
 
@@ -392,6 +461,130 @@ namespace	ft
 	ft::pair<T1, T2> make_pair (T1 x, T2 y)
 	{
 		return ( ft::pair<T1, T2>(x, y) );
+	}
+}
+
+namespace ft
+{
+	template<class node, class _value_type>
+	class map_iterator
+	{
+		public:
+			// typedef _value_type								value_type;
+			// typedef _value_type*            				pointer;
+			// typedef _value_type&            				reference;
+			// typedef std::ptrdiff_t							difference_type;
+			// typedef ft::random_access_iterator_tag			iterator_category;
+			typedef typename ft::iterator_traits<_value_type*>::iterator_category	iterator_category;
+			typedef typename ft::iterator_traits<_value_type*>::value_type			value_type;
+			typedef typename ft::iterator_traits<_value_type*>::difference_type		difference_type;
+			typedef typename ft::iterator_traits<_value_type*>::pointer				pointer;
+			typedef typename ft::iterator_traits<_value_type*>::reference			reference;
+			node*			current_node;
+		
+		public:
+			map_iterator() : current_node()
+			{}
+
+			explicit map_iterator (node* node_) : current_node(node_)
+			{}
+			
+			map_iterator (const map_iterator<node, _value_type>& rev_it) : current_node(rev_it.current_node)
+			{}
+			
+			map_iterator& operator=(const map_iterator<node, _value_type>& rev_it)
+			{
+				current_node = rev_it.current_node;
+				// value = rev_it.value;
+				return (*this);
+			}
+			
+			map_iterator operator ++ (int)              
+			{
+				map_iterator tmp(*this);
+				++*this;
+				return (tmp);
+			}
+
+			map_iterator operator ++ ()              
+			{
+				if (current_node->right)
+				{
+					current_node = current_node->right;
+					while (current_node->left)
+						current_node = current_node->left;
+				}
+				else
+				{
+					if (current_node->p->left == current_node)
+					{
+						current_node = current_node->p;
+					}
+					else
+					{
+						current_node = current_node->p;
+						current_node = current_node->p;
+					}
+					
+				}
+				return (*this);
+			}
+
+			map_iterator operator -- ()              
+			{
+				if (current_node->left)
+				{
+					current_node = current_node->left;
+					while (current_node->right)
+						current_node = current_node->right;
+				}
+				else
+				{
+					if (current_node->p->right == current_node)
+					{
+						current_node = current_node->p;
+					}
+					else
+					{
+						current_node = current_node->p;
+						current_node = current_node->p;
+					}
+					
+				}
+				return (*this);
+			}
+
+			map_iterator operator -- (int)              
+			{
+				map_iterator tmp(*this);
+				--*this;
+				return (tmp);
+			}
+	
+			pointer operator*() const 
+			{
+				pointer tmp = (*current_node).data;
+				return tmp;
+			}
+			pointer operator->() const 
+			{
+				pointer tmp = (*current_node).data;
+				return tmp;
+			}
+	};
+	
+	template<class Iterator1, class Iterator2, class Iterator3, class Iterator4 >
+	bool operator==( const ft::map_iterator<Iterator1, Iterator2>& lhs,
+                 const ft::map_iterator<Iterator3, Iterator4>& rhs )   
+	{
+		return lhs.current_node == rhs.current_node;
+	}
+
+	template<class Iterator1, class Iterator2, class Iterator3, class Iterator4 >
+	bool operator!=( const ft::map_iterator<Iterator1, Iterator2>& lhs,
+                 const ft::map_iterator<Iterator3, Iterator4>& rhs )   
+	{
+		return lhs.current_node != rhs.current_node;
 	}
 }
 
