@@ -6,7 +6,7 @@
 /*   By: bvarlamo <bvarlamo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 12:47:07 by bvarlamo          #+#    #+#             */
-/*   Updated: 2022/10/26 17:55:07 by bvarlamo         ###   ########.fr       */
+/*   Updated: 2022/10/27 15:58:35 by bvarlamo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -326,11 +326,14 @@ namespace ft
 			reference operator*() const 
 			{
 				Iterator tmp = current; 
-				return *--tmp;
+				tmp--;
+				return *tmp;
 			}
 			pointer operator->() const 
 			{
-				return &(operator*());
+				Iterator tmp = current;
+				tmp--;
+				return (&*tmp);
 			}
 			
 			reference operator[] (difference_type n) const
@@ -475,12 +478,12 @@ namespace ft
 			// typedef _value_type&            				reference;
 			// typedef std::ptrdiff_t							difference_type;
 			// typedef ft::random_access_iterator_tag			iterator_category;
-			typedef typename ft::iterator_traits<_value_type*>::iterator_category	iterator_category;
+			node*											current_node;
+			typedef typename ft::random_access_iterator_tag							iterator_category;
 			typedef typename ft::iterator_traits<_value_type*>::value_type			value_type;
 			typedef typename ft::iterator_traits<_value_type*>::difference_type		difference_type;
 			typedef typename ft::iterator_traits<_value_type*>::pointer				pointer;
 			typedef typename ft::iterator_traits<_value_type*>::reference			reference;
-			node*			current_node;
 		
 		public:
 			map_iterator() : current_node()
@@ -492,10 +495,10 @@ namespace ft
 			map_iterator (const map_iterator<node, _value_type>& rev_it) : current_node(rev_it.current_node)
 			{}
 			
+			
 			map_iterator& operator=(const map_iterator<node, _value_type>& rev_it)
 			{
 				current_node = rev_it.current_node;
-				// value = rev_it.value;
 				return (*this);
 			}
 			
@@ -508,52 +511,70 @@ namespace ft
 
 			map_iterator operator ++ ()              
 			{
-				if (current_node->right)
+				if (current_node->right && current_node->right->data)
 				{
 					current_node = current_node->right;
-					while (current_node->left)
+					while (current_node->left->data)
 						current_node = current_node->left;
 				}
 				else
 				{
-					if (current_node->p->left == current_node)
-					{
-						current_node = current_node->p;
-					}
+					if (previous(current_node) == false)
+						current_node = current_node->right;
 					else
 					{
-						current_node = current_node->p;
+						while (current_node != current_node->p->left)
+							current_node = current_node->p;
 						current_node = current_node->p;
 					}
-					
 				}
 				return (*this);
 			}
 
 			map_iterator operator -- ()              
 			{
-				if (current_node->left)
+				if (current_node->left && current_node->left->data)
 				{
 					current_node = current_node->left;
-					while (current_node->right)
+					while (current_node->right->data)
 						current_node = current_node->right;
 				}
 				else
 				{
-					if (current_node->p->right == current_node)
-					{
-						current_node = current_node->p;
-					}
+					if (!next(current_node))
+						current_node = current_node->left;
 					else
 					{
-						current_node = current_node->p;
+						while (current_node != current_node->p->right)
+							current_node = current_node->p;
 						current_node = current_node->p;
 					}
-					
 				}
 				return (*this);
 			}
 
+			bool previous(node* t)
+			{
+				while (t && t->p && t != t->p->left)
+					t = t->p;
+				t = t->p;
+				if (!t)
+					return false;
+				else
+					return true;
+			}
+
+			bool next(node* tmp)
+			{
+				while (tmp && tmp->p && tmp != tmp->p->right)
+					tmp = tmp->p;
+				tmp = tmp->p;
+				if (!tmp)
+					return false;
+				else
+					return true;
+			}
+			
 			map_iterator operator -- (int)              
 			{
 				map_iterator tmp(*this);
@@ -561,10 +582,10 @@ namespace ft
 				return (tmp);
 			}
 	
-			pointer operator*() const 
+			reference operator*() const 
 			{
 				pointer tmp = (*current_node).data;
-				return tmp;
+				return *tmp;
 			}
 			pointer operator->() const 
 			{

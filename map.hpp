@@ -63,14 +63,23 @@ namespace	ft
 				node*		right;
 				node*		p;
 
+				node(node* _p)
+				{
+					data = NULL;
+					left = NULL;
+					right = NULL;
+					isred = false;
+					p = _p;
+				}
+
 				node(allocator_type alloc, value_type _data, node* _p)
 				{
 					// std::cout<< "node constructor" << std::endl;
 					_alloc = alloc;
 					data = alloc.allocate(1);
 					alloc.construct(data, _data.first, _data.second);
-					left = NULL;
-					right = NULL;
+					left = new node(&*this);
+					right = new node(&*this);
 					isred = false;
 					p = _p;
 					// std::cout<< "----" << data->first << "----" << data->second <<std::endl;
@@ -79,8 +88,11 @@ namespace	ft
 				~node()
 				{
 					// std::cout<< "node destructor" << std::endl;
-					_alloc.destroy(data);
-					_alloc.deallocate(data, 1);
+					if (data)
+					{
+						_alloc.destroy(data);
+						_alloc.deallocate(data, 1);
+					}
 					if (left)
 						delete left;
 					if (right)
@@ -116,26 +128,33 @@ namespace	ft
 				current = NULL;
 			}
 		
-			reverse_iterator end()
+			iterator end()
 			{
 				current = &root;
 				while ((*current)->right)
 					current = &(*current)->right;
 				iterator tm((*current));
-				reverse_iterator tmp(tm);
-				return (tmp);
+				return (tm);
 			}
 
 			iterator begin()
 			{
-				node* tmp = root;
-				iterator it(tmp);
-				return (it);
+				current = &root;
+				while ((*current)->left)
+					current = &(*current)->left;
+				iterator tm((*current));
+				return (tm);
 			}
 
 			reverse_iterator rbegin()
 			{
-				reverse_iterator it = end();
+				reverse_iterator it(end());
+				return (it);
+			}
+
+			reverse_iterator rend()
+			{
+				reverse_iterator it(++begin());
 				return (it);
 			}
 
@@ -194,16 +213,17 @@ namespace	ft
 				}
 				current = &root;
 				node *p;
-				while (*current != NULL)
+				while ((*current)->data != NULL)
 				{
 					p = *current;
-					if ((*current)->data->first == val.first)
+					if ((*current)->data && (*current)->data->first == val.first)
 						return(ft::pair<iterator, bool>((iterator((*current))), false));
 					else if (value_compare(_comp).comp((*current)->data->first, val.first))
 						current = &(*current)->right;
 					else
 						current = &(*current)->left;
 				}
+				delete *current;
 				*current = new node(_alloc, val, p);
 				size++;
 				return (ft::pair<iterator, bool>((iterator((*current))), true));
