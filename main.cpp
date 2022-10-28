@@ -36,13 +36,15 @@ int	main(void)
 	// for (; it != end; it++)
 	// 	std::cout<< it->first << ": " << it->second << std::endl;
 	// std::cout<< a["b"] << ": " << a["a"] << ": " << a["c"] << std::endl;
-	ft::pair<std::string, std::string> a("a", "1");
+	// ft::pair<std::string, std::string> a("a", "1");
 	ft::map<std::string, std::string> c;
 	ft::map<std::string, std::string> b;
 
+	std::cout<< (b.insert(ft::pair<std::string, std::string>("c", "3"))).first->second <<std::endl;
 	std::cout<< (b.insert(ft::pair<std::string, std::string>("a", "1"))).first->second <<std::endl;
 	std::cout<< (b.insert(ft::pair<std::string, std::string>("b", "2"))).first->second <<std::endl;
-	std::cout<< (b.insert(ft::pair<std::string, std::string>("c", "3"))).first->second <<std::endl;
+	std::cout<<"eljo "<<std::endl;
+	// std::cout<< (b.insert(ft::pair<std::string, std::string>("c", "3"))).first->second <<std::endl;
 	// b.print();
 	ft::map<std::string, std::string>::reverse_iterator it = b.rend();
 	ft::map<std::string, std::string>::reverse_iterator itt;
@@ -65,9 +67,10 @@ int	main(void)
 	std::map<std::string, std::string> d;
 	std::map<std::string, std::string> f;
 
+	std::cout<< (f.insert(std::pair<std::string, std::string>("c", "3"))).first->second <<std::endl;
 	std::cout<< (f.insert(std::pair<std::string, std::string>("a", "1"))).first->second <<std::endl;
 	std::cout<< (f.insert(std::pair<std::string, std::string>("b", "2"))).first->second <<std::endl;
-	std::cout<< (f.insert(std::pair<std::string, std::string>("c", "3"))).first->second <<std::endl;
+	// std::cout<< (f.insert(std::pair<std::string, std::string>("c", "3"))).first->second <<std::endl;
 	
 
 	std::map<std::string, std::string>::reverse_iterator it1 = f.rend();

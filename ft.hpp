@@ -6,7 +6,7 @@
 /*   By: bvarlamo <bvarlamo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 12:47:07 by bvarlamo          #+#    #+#             */
-/*   Updated: 2022/10/27 15:58:35 by bvarlamo         ###   ########.fr       */
+/*   Updated: 2022/10/28 19:00:16 by bvarlamo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -469,16 +469,12 @@ namespace	ft
 
 namespace ft
 {
-	template<class node, class _value_type>
+	template<class node, class _value_type, class _roo>
 	class map_iterator
 	{
 		public:
-			// typedef _value_type								value_type;
-			// typedef _value_type*            				pointer;
-			// typedef _value_type&            				reference;
-			// typedef std::ptrdiff_t							difference_type;
-			// typedef ft::random_access_iterator_tag			iterator_category;
-			node*											current_node;
+			node*																	current_node;
+			_roo*																	root;
 			typedef typename ft::random_access_iterator_tag							iterator_category;
 			typedef typename ft::iterator_traits<_value_type*>::value_type			value_type;
 			typedef typename ft::iterator_traits<_value_type*>::difference_type		difference_type;
@@ -486,19 +482,20 @@ namespace ft
 			typedef typename ft::iterator_traits<_value_type*>::reference			reference;
 		
 		public:
-			map_iterator() : current_node()
+			map_iterator() : current_node(), root()
 			{}
 
-			explicit map_iterator (node* node_) : current_node(node_)
+			explicit map_iterator (node* node_, _roo* _root) : current_node(node_), root(_root)
 			{}
 			
-			map_iterator (const map_iterator<node, _value_type>& rev_it) : current_node(rev_it.current_node)
+			map_iterator (const map_iterator<node, _value_type, node>& rev_it) : current_node(rev_it.current_node), root(rev_it.root)
 			{}
 			
 			
-			map_iterator& operator=(const map_iterator<node, _value_type>& rev_it)
+			map_iterator& operator=(const map_iterator<node, _value_type, node>& rev_it)
 			{
 				current_node = rev_it.current_node;
+				root = rev_it.root;
 				return (*this);
 			}
 			
@@ -519,7 +516,7 @@ namespace ft
 				}
 				else
 				{
-					if (previous(current_node) == false)
+					if (current_node == last(root))
 						current_node = current_node->right;
 					else
 					{
@@ -527,6 +524,7 @@ namespace ft
 							current_node = current_node->p;
 						current_node = current_node->p;
 					}
+					
 				}
 				return (*this);
 			}
@@ -541,7 +539,7 @@ namespace ft
 				}
 				else
 				{
-					if (!next(current_node))
+					if (current_node == first(root))
 						current_node = current_node->left;
 					else
 					{
@@ -553,26 +551,20 @@ namespace ft
 				return (*this);
 			}
 
-			bool previous(node* t)
+			node* last(_roo* t)
 			{
-				while (t && t->p && t != t->p->left)
-					t = t->p;
-				t = t->p;
-				if (!t)
-					return false;
-				else
-					return true;
+				_roo* tmp = t;
+				while (tmp->right->right)
+					tmp = tmp->right;
+				return tmp;
 			}
 
-			bool next(node* tmp)
+			node* first(_roo* t)
 			{
-				while (tmp && tmp->p && tmp != tmp->p->right)
-					tmp = tmp->p;
-				tmp = tmp->p;
-				if (!tmp)
-					return false;
-				else
-					return true;
+				_roo* tmp = t;
+				while (tmp->left->left)
+					tmp = tmp->left;
+				return tmp;
 			}
 			
 			map_iterator operator -- (int)              
@@ -594,18 +586,22 @@ namespace ft
 			}
 	};
 	
-	template<class Iterator1, class Iterator2, class Iterator3, class Iterator4 >
-	bool operator==( const ft::map_iterator<Iterator1, Iterator2>& lhs,
-                 const ft::map_iterator<Iterator3, Iterator4>& rhs )   
+	template<class Iterator1, class Iterator2, class Iterator3, class Iterator4, class Iterator5, class Iterator6 >
+	bool operator==( const ft::map_iterator<Iterator1, Iterator2, Iterator3>& lhs,
+                 const ft::map_iterator<Iterator4, Iterator5, Iterator6>& rhs )   
 	{
-		return lhs.current_node == rhs.current_node;
+		if (lhs.root != rhs.root && lhs.current_node != rhs.current_node)
+			return false;
+		return true;
 	}
 
-	template<class Iterator1, class Iterator2, class Iterator3, class Iterator4 >
-	bool operator!=( const ft::map_iterator<Iterator1, Iterator2>& lhs,
-                 const ft::map_iterator<Iterator3, Iterator4>& rhs )   
+	template<class Iterator1, class Iterator2, class Iterator3, class Iterator4, class Iterator5, class Iterator6 >
+	bool operator!=( const ft::map_iterator<Iterator1, Iterator2, Iterator3>& lhs,
+                 const ft::map_iterator<Iterator4, Iterator5, Iterator6>& rhs )   
 	{
-		return lhs.current_node != rhs.current_node;
+		if (lhs.root == rhs.root && lhs.current_node == rhs.current_node)
+			return false;
+		return true;
 	}
 }
 

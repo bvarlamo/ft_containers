@@ -107,16 +107,101 @@ namespace	ft
 			key_compare		_comp;
 
 		public:
-			typedef ft::map_iterator<node, value_type>			iterator;
+			typedef ft::map_iterator<node, value_type, node>	iterator;
 			typedef const_pointer								const_iterator;
 			typedef ft::reverse_iterator<iterator>				reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
 			
-			void	print()
+			void left_rotate(node& x)
 			{
-				std::cout<< root->data->first << "**" << root->data->second <<std::endl;
-				std::cout<< root->right->data->first << "**" << root->right->data->second <<std::endl;
-				std::cout<< root->right->right->data->first << "**" << root->right->right->data->second <<std::endl;
+				node*	y = x.right;
+				x.right = y->left;
+				if (y->left && y->left->data != NULL)
+					y->left->p = &x;
+				y->p = x.p;
+				if (x.p== NULL)
+					root = y;
+				else if (x.p && &x == x.p->left)
+					x.p->left = y;
+				else
+					x.p->right = y;
+				y->left = &x;
+				x.p = y;
+			}
+
+			void right_rotate(node& x)
+			{
+				node*	y = x.left;
+				x.left = y->right;
+				if (y->right->data != NULL)
+					y->right->p = &x;
+				y->p = x.p;
+				if (x.p == NULL)
+					root = y;
+				else if (x.p && &x == x.p->right)
+					x.p->right = y;
+				else
+					x.p->left = y;
+				y->right = &x;
+				x.p = y;
+			}
+
+			void insert_fixup(node& z)
+			{
+				node*	y;
+				while (z.p->isred)
+				{
+					if (z.p == z.p->p->left)
+					{
+						y = z.p->p->right;
+						if (y->isred)
+						{
+							z.p->isred = false;
+							y->isred = false;
+							z.p->p->isred = true;
+							z = z.p->p;
+						}
+						else
+						{
+							if (&z == z.p->right)
+							{
+								std::cout<<"ss "<<z.data->first<<std::endl;
+								z = *z.p;
+								std::cout<<"ss1 "<<z.data->first<<std::endl;
+								std::cout<<"ss2 "<<z.right->data->first<<std::endl;
+								left_rotate(z);
+								std::cout<<"ss "<<z.right->data->first<<std::endl;
+							}
+							z.p->isred = false;
+							z.p->p->isred = true;
+							right_rotate(*z.p->p);
+							std::cout<<"ss "<<&z<<std::endl;
+						}
+					}
+					else 
+					{
+						y = z.p->p->left;
+						if (y->isred)
+						{
+							z.p->isred = false;
+							y->isred = false;
+							z.p->p->isred = true;
+							z = z.p->p;
+						}
+						else
+						{
+							if (&z == z.p->left)
+							{
+								z = *z.p;
+								right_rotate(z);
+							}
+							z.p->isred = false;
+							z.p->p->isred = true;
+							left_rotate(*z.p->p);
+						}
+					}
+					root->isred = false;
+				}
 			}
 
 			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
@@ -133,16 +218,16 @@ namespace	ft
 				current = &root;
 				while ((*current)->right)
 					current = &(*current)->right;
-				iterator tm((*current));
+				iterator tm((*current), root);
 				return (tm);
 			}
 
 			iterator begin()
 			{
 				current = &root;
-				while ((*current)->left)
+				while ((*current)->left->data)
 					current = &(*current)->left;
-				iterator tm((*current));
+				iterator tm((*current), root);
 				return (tm);
 			}
 
@@ -154,7 +239,7 @@ namespace	ft
 
 			reverse_iterator rend()
 			{
-				reverse_iterator it(++begin());
+				reverse_iterator it(begin());
 				return (it);
 			}
 
@@ -208,8 +293,9 @@ namespace	ft
 				{
 					root = new node(_alloc, val, NULL);
 					current = &root;
+					root->isred = false;
 					size++;
-					return (ft::pair<iterator, bool>(iterator((*current)), true));
+					return (ft::pair<iterator, bool>(iterator((*current), root), true));
 				}
 				current = &root;
 				node *p;
@@ -217,7 +303,7 @@ namespace	ft
 				{
 					p = *current;
 					if ((*current)->data && (*current)->data->first == val.first)
-						return(ft::pair<iterator, bool>((iterator((*current))), false));
+						return(ft::pair<iterator, bool>((iterator((*current), root)), false));
 					else if (value_compare(_comp).comp((*current)->data->first, val.first))
 						current = &(*current)->right;
 					else
@@ -225,8 +311,20 @@ namespace	ft
 				}
 				delete *current;
 				*current = new node(_alloc, val, p);
+				(*current)->isred = true;
+				std::cout<<"aa "<<root->data->first<<std::endl;
+				if (root->left->left)
+					std::cout<<"a1 "<<root->left->data->first<<std::endl;
+				if (root->left->right->left)
+					std::cout<<"a2 "<<root->left->right->data->first<<std::endl;
+				insert_fixup(*(*current));
+				std::cout<<"aa "<<root->data->first<<std::endl;
+				if (root->left->left)
+					std::cout<<"a1 "<<root->left->data->first<<std::endl;
+				if (root->left->right->left)
+					std::cout<<"a2 "<<root->left->right->data->first<<std::endl;
 				size++;
-				return (ft::pair<iterator, bool>((iterator((*current))), true));
+				return (ft::pair<iterator, bool>((iterator((*current), root)), true));
 			}
 	};
 }
