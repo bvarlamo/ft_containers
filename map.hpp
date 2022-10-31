@@ -28,10 +28,7 @@ namespace	ft
 			typedef const value_type&							const_reference;
 			typedef typename Allocator::pointer					pointer;
 			typedef typename Allocator::const_pointer			const_pointer;
-			// typedef ft::map_iterator<node, value_type>			iterator;
-			// typedef const_pointer								const_iterator;
-			// typedef ft::reverse_iterator<iterator>				reverse_iterator;
-			// typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
+
 
 		private:
 
@@ -74,7 +71,6 @@ namespace	ft
 
 				node(allocator_type alloc, value_type _data, node* _p)
 				{
-					// std::cout<< "node constructor" << std::endl;
 					_alloc = alloc;
 					data = alloc.allocate(1);
 					alloc.construct(data, _data.first, _data.second);
@@ -82,12 +78,10 @@ namespace	ft
 					right = new node(&*this);
 					isred = false;
 					p = _p;
-					// std::cout<< "----" << data->first << "----" << data->second <<std::endl;
 				}
 
 				~node()
 				{
-					// std::cout<< "node destructor" << std::endl;
 					if (data)
 					{
 						_alloc.destroy(data);
@@ -98,110 +92,111 @@ namespace	ft
 					if (right)
 						delete right;
 				}
+
 			};
 
 			node*			root;
 			node**			current;
-			size_type		size;
+			size_type		_size;
 			allocator_type	_alloc;
 			key_compare		_comp;
 
 		public:
 			typedef ft::map_iterator<node, value_type, node>	iterator;
-			typedef const_pointer								const_iterator;
+			typedef const iterator								const_iterator;
 			typedef ft::reverse_iterator<iterator>				reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
 			
-			void left_rotate(node& x)
+			void left_rotate(node* x)
 			{
-				node*	y = x.right;
-				x.right = y->left;
+				node*	y = x->right;
+				x->right = y->left;
 				if (y->left && y->left->data != NULL)
-					y->left->p = &x;
-				y->p = x.p;
-				if (x.p== NULL)
+					y->left->p = x;
+				y->p = x->p;
+				if (x->p== NULL)
 					root = y;
-				else if (x.p && &x == x.p->left)
-					x.p->left = y;
+				else if (x->p && x == x->p->left)
+					x->p->left = y;
 				else
-					x.p->right = y;
-				y->left = &x;
-				x.p = y;
+					x->p->right = y;
+				y->left = x;
+				x->p = y;
 			}
 
-			void right_rotate(node& x)
+			void right_rotate(node* x)
 			{
-				node*	y = x.left;
-				x.left = y->right;
-				if (y->right->data != NULL)
-					y->right->p = &x;
-				y->p = x.p;
-				if (x.p == NULL)
+				node*	y = x->left;
+				x->left = y->right;
+				if (y->right && y->right->data != NULL)
+					y->right->p = x;
+				y->p = x->p;
+				if (x->p == NULL)
 					root = y;
-				else if (x.p && &x == x.p->right)
-					x.p->right = y;
+				else if (x->p && x == x->p->right)
+					x->p->right = y;
 				else
-					x.p->left = y;
-				y->right = &x;
-				x.p = y;
+					x->p->left = y;
+				y->right = x;
+				x->p = y;
 			}
 
-			void insert_fixup(node& z)
+			node* insert_fixup(node* z)
 			{
 				node*	y;
-				while (z.p->isred)
+				node*	tmp;
+				tmp = z;
+				while (tmp->p && tmp->p->isred)
 				{
-					if (z.p == z.p->p->left)
+					if (tmp->p == tmp->p->p->left)
 					{
-						y = z.p->p->right;
+						y = tmp->p->p->right;
 						if (y->isred)
 						{
-							z.p->isred = false;
+							tmp->p->isred = false;
 							y->isred = false;
-							z.p->p->isred = true;
-							z = z.p->p;
+							tmp->p->p->isred = true;
+							tmp = tmp->p->p;
 						}
 						else
 						{
-							if (&z == z.p->right)
+							if (tmp == tmp->p->right)
 							{
-								std::cout<<"ss "<<z.data->first<<std::endl;
-								z = *z.p;
-								std::cout<<"ss1 "<<z.data->first<<std::endl;
-								std::cout<<"ss2 "<<z.right->data->first<<std::endl;
-								left_rotate(z);
-								std::cout<<"ss "<<z.right->data->first<<std::endl;
+								tmp = tmp->p;
+								left_rotate(tmp->p);
 							}
-							z.p->isred = false;
-							z.p->p->isred = true;
-							right_rotate(*z.p->p);
-							std::cout<<"ss "<<&z<<std::endl;
+							tmp->p->isred = false;
+							if (tmp->p->p)
+								tmp->p->p->isred = true;
+							right_rotate(tmp->p->p);
 						}
 					}
 					else 
 					{
-						y = z.p->p->left;
+						y = tmp->p->p->left;
 						if (y->isred)
 						{
-							z.p->isred = false;
+							tmp->p->isred = false;
 							y->isred = false;
-							z.p->p->isred = true;
-							z = z.p->p;
+							tmp->p->p->isred = true;
+							tmp = tmp->p->p;
 						}
 						else
 						{
-							if (&z == z.p->left)
+							if (tmp == tmp->p->left)
 							{
-								z = *z.p;
-								right_rotate(z);
+								tmp = tmp->p;
+								right_rotate(tmp->p);
 							}
-							z.p->isred = false;
-							z.p->p->isred = true;
-							left_rotate(*z.p->p);
+							tmp->p->isred = false;
+							if (tmp->p->p)
+								tmp->p->p->isred = true;
+							left_rotate(tmp->p->p);
 						}
 					}
 					root->isred = false;
 				}
+				return z;
 			}
 
 			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
@@ -209,14 +204,40 @@ namespace	ft
 				_comp = comp;
 				_alloc = alloc;
 				root = NULL;
-				size = 0;
+				_size = 0;
 				current = NULL;
+			}
+
+			template< class InputIt >
+			map( InputIt first, InputIt last, const Compare& comp = Compare(), const Allocator& alloc = Allocator() )
+			{
+				_comp = comp;
+				_alloc = alloc;
+				root = NULL;
+				_size = 0;
+				current = NULL;
+				InputIt tmp = first;
+				while (tmp != last)
+				{
+					insert(*tmp);
+					tmp++;
+				}
+			}
+
+			map (const map& x)
+			{
+				_comp = x._comp;
+				_alloc = x._alloc;
+				root = NULL;
+				_size = 0;
+				current = NULL;
+				insert(x.begin(), x.end());
 			}
 		
 			iterator end()
 			{
 				current = &root;
-				while ((*current)->right)
+				while ((*current) && (*current)->right)
 					current = &(*current)->right;
 				iterator tm((*current), root);
 				return (tm);
@@ -225,10 +246,30 @@ namespace	ft
 			iterator begin()
 			{
 				current = &root;
-				while ((*current)->left->data)
+				while ((*current) && (*current)->left->data)
 					current = &(*current)->left;
 				iterator tm((*current), root);
 				return (tm);
+			}
+
+			const_iterator end() const
+			{
+				node* tmp = root;
+				while (tmp && tmp->left && tmp->right)
+					tmp = tmp->right;
+				iterator tm(tmp, root);
+				const_iterator f(tm);
+				return (f);
+			}
+
+			const_iterator begin() const
+			{
+				node* tmp = root;
+				while (tmp && tmp->left && tmp->left->data)
+					tmp = tmp->left;
+				iterator tm(tmp, root);
+				const_iterator f(tm);
+				return (f);
 			}
 
 			reverse_iterator rbegin()
@@ -243,48 +284,10 @@ namespace	ft
 				return (it);
 			}
 
-			// template <class InputIterator> 
-			// map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
-			// {
-			// 	std::cout<< "first and last constructor" << std::endl;
-			// 	_comp = comp;
-			// 	_alloc = alloc;
-			// 	node tmp(_alloc, first, NULL);
-			// 	root = &tmp;
-			// 	current = root;
-			// 	size = 1;
-			// 	for(InputIterator tmp2 = ++first; tmp != last; tmp++ )
-			// 	{
-			// 		if (_comp(current->data, tmp2))
-			// 		{
-			// 			node tmp1(_alloc, tmp2, current);
-			// 			current->data->right = &tmp1;
-			// 			current = current->data->right;
-			// 		}
-			// 		else if (current->data->first == tmp2->first)
-			// 		{
-			// 			std::cout<< "already exists" <<std::endl;
-			// 		}
-			// 		else
-			// 		{
-			// 			node tmp1(_alloc, tmp2, current);
-			// 			current->data->left = &tmp1;
-			// 			current = current->data->left;
-			// 		}
-			// 	}
-				
-			// 	std::cout<< "heljo" << std::endl;
-			// 	std::cout<< root->data->first << "----" << root->data->second <<std::endl;
-			// }
-
-			// map (const map& x)
-			// {
-
-			// }
-
 			~map()
 			{
-				delete root;
+				if (root)
+					delete root;
 			}
 
 			ft::pair<iterator,bool> insert (const value_type& val)
@@ -294,7 +297,7 @@ namespace	ft
 					root = new node(_alloc, val, NULL);
 					current = &root;
 					root->isred = false;
-					size++;
+					_size++;
 					return (ft::pair<iterator, bool>(iterator((*current), root), true));
 				}
 				current = &root;
@@ -312,21 +315,153 @@ namespace	ft
 				delete *current;
 				*current = new node(_alloc, val, p);
 				(*current)->isred = true;
-				std::cout<<"aa "<<root->data->first<<std::endl;
-				if (root->left->left)
-					std::cout<<"a1 "<<root->left->data->first<<std::endl;
-				if (root->left->right->left)
-					std::cout<<"a2 "<<root->left->right->data->first<<std::endl;
-				insert_fixup(*(*current));
-				std::cout<<"aa "<<root->data->first<<std::endl;
-				if (root->left->left)
-					std::cout<<"a1 "<<root->left->data->first<<std::endl;
-				if (root->left->right->left)
-					std::cout<<"a2 "<<root->left->right->data->first<<std::endl;
-				size++;
+				node* tmp;
+				tmp = insert_fixup((*current));
+				current = &tmp;
+				_size++;
 				return (ft::pair<iterator, bool>((iterator((*current), root)), true));
 			}
-	};
-}
 
+			template< class InputIt >
+			void insert( InputIt first, InputIt last )
+			{
+				InputIt tmp = first;
+				while (tmp != last)
+				{
+					insert(*tmp);
+					tmp++;
+				}
+			}
+
+			iterator insert (iterator position, const value_type& val)
+			{
+				(void)position;
+				return (insert(val).first);
+			}
+
+			size_type size() const
+			{
+				return _size;
+			}
+
+			size_type max_size() const
+			{
+				return (_alloc.max_size());
+			}
+
+			bool empty() const
+			{
+				return !_size;
+			}
+
+			mapped_type& operator[] (const key_type& k)
+			{
+				mapped_type *m = &((this->insert(ft::make_pair(k,mapped_type()))).first->second);
+				return (*m);
+			}
+
+			mapped_type& at (const key_type& k)
+			{
+				current = &root;
+				while ((*current)->data != NULL)
+				{
+					if ((*current)->data && (*current)->data->first == k)
+						return((*current)->data->second);
+					else if (value_compare(_comp).comp((*current)->data->first, k))
+						current = &(*current)->right;
+					else
+						current = &(*current)->left;
+				}
+				throw std::out_of_range("Dont have this key");
+			}
+
+			const mapped_type& at (const key_type& k) const
+			{
+				current = &root;
+				while ((*current)->data != NULL)
+				{
+					if ((*current)->data && (*current)->data->first == k)
+						return((*current)->data->second);
+					else if (value_compare(_comp).comp((*current)->data->first, k))
+						current = &(*current)->right;
+					else
+						current = &(*current)->left;
+				}
+				throw std::out_of_range("Dont have this key");
+			}
+
+			void swap (map& x)
+			{
+				node* tmp = x.root;
+				size_type tm = x._size;
+				x.root = root;
+				x._size = _size;
+				root = tmp;
+				_size = tm;
+			}
+
+			void clear()
+			{
+				if (root)
+					delete root;
+				root = NULL;
+				_size = 0;
+			}
+
+			map& operator= (const map& x)
+			{
+				clear();
+				if (&x == this)
+					return *this;
+				insert(x.begin(), x.end());
+				return *this;
+			}
+
+			size_type count( const Key& key ) const
+			{
+				node*	tmp = root;
+				while (tmp->data != NULL)
+				{
+					if (tmp->data && tmp->data->first == key)
+						return(1);
+					else if (value_compare(_comp).comp(tmp->data->first, key))
+						tmp = tmp->right;
+					else
+						tmp = tmp->left;
+				}
+				return 0;
+			}
+
+			iterator find( const Key& key )
+			{
+				node* tmp = root;
+				while (tmp->data != NULL)
+				{
+					if (tmp->data && tmp->data->first == key)
+						return(iterator(tmp, root));
+					else if (value_compare(_comp).comp(tmp->data->first, key))
+						tmp = tmp->right;
+					else
+						tmp = tmp->left;
+				}
+				return (end());
+			}
+
+			const_iterator find( const Key& key ) const
+			{
+				node* tmp = root;
+				while (tmp->data != NULL)
+				{
+					if (tmp->data && tmp->data->first == key)
+						return(const_iterator(tmp, root));
+					else if (value_compare(_comp).comp(tmp->data->first, key))
+						tmp = tmp->right;
+					else
+						tmp = tmp->left;
+				}
+				return (end());
+			}
+	};
+
+}
 #endif

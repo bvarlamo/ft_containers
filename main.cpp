@@ -40,53 +40,154 @@ int	main(void)
 	ft::map<std::string, std::string> c;
 	ft::map<std::string, std::string> b;
 
-	std::cout<< (b.insert(ft::pair<std::string, std::string>("c", "3"))).first->second <<std::endl;
-	std::cout<< (b.insert(ft::pair<std::string, std::string>("a", "1"))).first->second <<std::endl;
-	std::cout<< (b.insert(ft::pair<std::string, std::string>("b", "2"))).first->second <<std::endl;
-	std::cout<<"eljo "<<std::endl;
-	// std::cout<< (b.insert(ft::pair<std::string, std::string>("c", "3"))).first->second <<std::endl;
+	std::cout<< (b.insert(ft::pair<std::string, std::string>("c", "3"))).first->second;
+	std::cout<< (b.insert(ft::pair<std::string, std::string>("a", "1"))).first->second;
+	std::cout<< (b.insert(ft::pair<std::string, std::string>("b", "2"))).first->second;
+	std::cout<< (b.insert(ft::pair<std::string, std::string>("d", "4"))).first->second;
+	std::cout<< (b.insert(ft::pair<std::string, std::string>("e", "5"))).first->second;
+	std::cout<< (b.insert(ft::pair<std::string, std::string>("f", "6"))).first->second;
+	std::cout<< (b.insert(ft::pair<std::string, std::string>("g", "7"))).first->second;
+	std::cout<< (b.insert(ft::pair<std::string, std::string>("h", "8"))).first->second;
+	std::cout<< (b.insert(ft::pair<std::string, std::string>("i", "9"))).first->second;
+	std::cout<< (b.insert(ft::pair<std::string, std::string>("3", "c"))).first->second;
+	std::cout<< (b.insert(ft::pair<std::string, std::string>("1", "a"))).first->second;
+	std::cout<< (b.insert(ft::pair<std::string, std::string>("2", "b"))).first->second;
+	std::cout<< (b.insert(ft::pair<std::string, std::string>("4", "d"))).first->second;
+	std::cout<< (b.insert(ft::pair<std::string, std::string>("5", "e"))).first->second;
+	std::cout<< (b.insert(ft::pair<std::string, std::string>("6", "f"))).first->second;
+	std::cout<< (b.insert(ft::pair<std::string, std::string>("7", "g"))).first->second;
+	std::cout<< (b.insert(ft::pair<std::string, std::string>("8", "h"))).first->second;
+	std::cout<< (b.insert(ft::pair<std::string, std::string>("9", "i"))).first->second;
 	// b.print();
-	ft::map<std::string, std::string>::reverse_iterator it = b.rend();
-	ft::map<std::string, std::string>::reverse_iterator itt;
-	itt = it;
-	// b.print();
+	// ft::map<std::string, std::string>::iterator it = b.begin();
+	// ft::map<std::string, std::string>::iterator end = b.end();
+	ft::map<std::string, std::string> x(b);
+	std::cout << "\nmymap['d'] is " << x["1"];
 
-	std::cout<< (--it)->first <<std::endl;
-	std::cout<< (--it)->first <<std::endl;
-	std::cout<< (it--)->first <<std::endl;
-	itt--;
-	std::cout<< itt->first <<std::endl;
-	std::cout<< (it++)->first <<std::endl;
-	std::cout<< (++it)->first <<std::endl;
-	*it--;
-	*it++;
-	std::cout<< it->first <<std::endl;
+	
+	std::cout<<"size: "<<x.max_size()<<std::endl;
+	std::cout<<c.empty()<<std::endl;
+	x.at("8") = "H";
+	ft::pair<std::string, std::string> pp;
+	pp = ft::make_pair ("90", "X");
+	x.insert(x.begin(), pp);
+
+	x.swap(b);
+	ft::map<std::string, std::string>::iterator x1 = x.begin();
+	ft::map<std::string, std::string>::iterator x2 = x.end();
+	while (x1 != x2)
+	{
+		std::cout<<x1->first<<" : "<<x1->second<<" ";
+		x1++;
+	}
+	std::cout<<std::endl;
+
+	b.clear();
+	std::cout<<"size: "<<b.size()<<std::endl;
+	b = x;
+	ft::map<std::string, std::string>::iterator b1 = b.begin();
+	ft::map<std::string, std::string>::iterator b2 = b.end();
+	while (b1 != b2)
+	{
+		std::cout<<b1->first<<" : "<<b1->second<<" ";
+		b1++;
+	}
+	std::cout<<std::endl;
+	
+	std::cout<<"count: "<<b.count("99")<<std::endl;
+	std::cout<<"find: "<<b.find("9")->second<<std::endl;
+	// ft::map<std::string, std::string>::reverse_iterator itt;
+	// itt = it;
+	// // b.print();
+
+	// // std::cout<<"eljo "<<std::endl;	
+	// std::cout<< (--it)->first <<std::endl;
+	// std::cout<< (--it)->first <<std::endl;
+	// std::cout<< (it--)->first <<std::endl;
+	// itt--;
+	// std::cout<< itt->first <<std::endl;
+	// std::cout<< (it++)->first <<std::endl;
+	// std::cout<< (++it)->first <<std::endl;
+	// *it--;
+	// *it++;
+	// std::cout<< it->first <<std::endl;
 
 
 
 	std::map<std::string, std::string> d;
 	std::map<std::string, std::string> f;
 
-	std::cout<< (f.insert(std::pair<std::string, std::string>("c", "3"))).first->second <<std::endl;
-	std::cout<< (f.insert(std::pair<std::string, std::string>("a", "1"))).first->second <<std::endl;
-	std::cout<< (f.insert(std::pair<std::string, std::string>("b", "2"))).first->second <<std::endl;
-	// std::cout<< (f.insert(std::pair<std::string, std::string>("c", "3"))).first->second <<std::endl;
+	std::cout<< (f.insert(std::pair<std::string, std::string>("c", "3"))).first->second;
+	std::cout<< (f.insert(std::pair<std::string, std::string>("a", "1"))).first->second;
+	std::cout<< (f.insert(std::pair<std::string, std::string>("b", "2"))).first->second;
+	std::cout<< (f.insert(std::pair<std::string, std::string>("d", "4"))).first->second;
+	std::cout<< (f.insert(std::pair<std::string, std::string>("e", "5"))).first->second;
+	std::cout<< (f.insert(std::pair<std::string, std::string>("f", "6"))).first->second;
+	std::cout<< (f.insert(std::pair<std::string, std::string>("g", "7"))).first->second;
+	std::cout<< (f.insert(std::pair<std::string, std::string>("h", "8"))).first->second;
+	std::cout<< (f.insert(std::pair<std::string, std::string>("i", "9"))).first->second;
+	std::cout<< (f.insert(std::pair<std::string, std::string>("3", "c"))).first->second;
+	std::cout<< (f.insert(std::pair<std::string, std::string>("1", "a"))).first->second;
+	std::cout<< (f.insert(std::pair<std::string, std::string>("2", "b"))).first->second;
+	std::cout<< (f.insert(std::pair<std::string, std::string>("4", "d"))).first->second;
+	std::cout<< (f.insert(std::pair<std::string, std::string>("5", "e"))).first->second;
+	std::cout<< (f.insert(std::pair<std::string, std::string>("6", "f"))).first->second;
+	std::cout<< (f.insert(std::pair<std::string, std::string>("7", "g"))).first->second;
+	std::cout<< (f.insert(std::pair<std::string, std::string>("8", "h"))).first->second;
+	std::cout<< (f.insert(std::pair<std::string, std::string>("9", "i"))).first->second;
 	
 
-	std::map<std::string, std::string>::reverse_iterator it1 = f.rend();
-	std::map<std::string, std::string>::reverse_iterator it1t;
-	it1t = it1;
+	// std::map<std::string, std::string>::iterator it1 = f.begin();
+	// std::map<std::string, std::string>::iterator it1e = f.end();
+	std::map<std::string, std::string> y(f);
+	std::cout << "\nmymap['d'] is " << y["1"];
+	
+	
+	std::cout<<"size: "<<y.max_size()<<std::endl;
+	std::cout<<d.empty()<<std::endl;
+	y.at("8") = "H";
+	std::pair<std::string, std::string> p;
+	p = std::make_pair ("90", "X");
+	y.insert(y.begin(), p);
 
-	std::cout<< (--it1)->first <<std::endl;
-	std::cout<< (--it1)->first <<std::endl;
-	std::cout<< (it1--)->first <<std::endl;
-	it1t--;
-	std::cout<< it1t->first <<std::endl;
-	std::cout<< (it1++)->first <<std::endl;
-	std::cout<< (++it1)->first <<std::endl;
-	*it1--;
-	*it1++;
-	std::cout<< it1->first <<std::endl;
+	y.swap(f);
+
+	std::map<std::string, std::string>::iterator y1 = y.begin();
+	std::map<std::string, std::string>::iterator y2 = y.end();
+	while (y1 != y2)
+	{
+		std::cout<<y1->first<<" : "<<y1->second<<" ";
+		y1++;
+	}
+	std::cout<<std::endl;
+
+	f.clear();
+	std::cout<<"size: "<<f.size()<<std::endl;
+	f = y;
+	std::map<std::string, std::string>::iterator f1 = f.begin();
+	std::map<std::string, std::string>::iterator f2 = f.end();
+	while (f1 != f2)
+	{
+		std::cout<<f1->first<<" : "<<f1->second<<" ";
+		f1++;
+	}
+	std::cout<<std::endl;
+
+	std::cout<<"count: "<<f.count("99")<<std::endl;
+	std::cout<<"find: "<<f.find("9")->second<<std::endl;
+	// std::map<std::string, std::string>::reverse_iterator it1t;
+	// it1t = it1;
+
+	// std::cout<< (--it1)->first <<std::endl;
+	// std::cout<< (--it1)->first <<std::endl;
+	// std::cout<< (it1--)->first <<std::endl;
+	// it1t--;
+	// std::cout<< it1t->first <<std::endl;
+	// std::cout<< (it1++)->first <<std::endl;
+	// std::cout<< (++it1)->first <<std::endl;
+	// *it1--;
+	// *it1++;
+	// std::cout<< it1->first <<std::endl;
 
 	
 	// b.print();
@@ -146,3 +247,4 @@ int	main(void)
 
 	return 0;
 }
+

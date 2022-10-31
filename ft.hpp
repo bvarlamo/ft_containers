@@ -6,76 +6,12 @@
 /*   By: bvarlamo <bvarlamo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 12:47:07 by bvarlamo          #+#    #+#             */
-/*   Updated: 2022/10/28 19:00:16 by bvarlamo         ###   ########.fr       */
+/*   Updated: 2022/10/31 16:16:34 by bvarlamo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_HPP
 #define FT_HPP
-
-// namespace ft
-// {
-// 	template <class _value, class _compare, class _alloc>
-// 	class	tree
-// 	{
-// 		_value*			data;
-// 		bool			isred;
-// 		_alloc			alloc;
-// 		std::size_t		size;
-
-// 		node*		left;
-// 		node*		right;
-// 		node*		p;
-
-// 		node(allocator_type _alloc, value_type _data, node* _p)
-// 		{
-// 			// std::cout<< "node constructor" << std::endl;
-// 			alloc = _alloc;
-// 			data = alloc.allocate(1);
-// 			alloc.construct(data, _data.first, _data.second);
-// 			left = NULL;
-// 			right = NULL;
-// 			isred = false;
-// 			p = _p;
-// 			// std::cout<< "----" << data->first << "----" << data->second <<std::endl;
-// 		}
-
-// 		~node()
-// 		{
-// 			// std::cout<< "node destructor" << std::endl;
-// 			_alloc.destroy(data);
-// 			_alloc.deallocate(data, 1);
-
-// 		}
-// 		public:
-// 			ft::pair<_value,bool> insert (const _value& val)
-// 			{
-// 				if (root == NULL)
-// 				{
-// 					root = new node(_alloc, val, NULL);
-// 					current = &root;
-// 					size++;
-// 					return (ft::pair<value_type*, bool>((*current)->data, true));
-// 				}
-// 				current = &root;
-// 				node *p;
-// 				while (*current != NULL)
-// 				{
-// 					p = *current;
-// 					if ((*current)->data->first == val.first)
-// 						return(ft::pair<value_type*, bool>((*current)->data, false));
-// 					else if (value_compare(_comp).comp((*current)->data->first, val.first))
-// 						current = &(*current)->right;
-// 					else
-// 						current = &(*current)->left;
-// 				}
-// 				*current = new node(_alloc, val, p);
-// 				size++;
-// 				return (ft::pair<value_type*, bool>((*current)->data, true));
-// 			}
-// 	};
-// }
-
 
 namespace ft
 {
@@ -551,7 +487,7 @@ namespace ft
 				return (*this);
 			}
 
-			node* last(_roo* t)
+			node* last(_roo* t) const
 			{
 				_roo* tmp = t;
 				while (tmp->right->right)
@@ -559,7 +495,7 @@ namespace ft
 				return tmp;
 			}
 
-			node* first(_roo* t)
+			node* first(_roo* t) const
 			{
 				_roo* tmp = t;
 				while (tmp->left->left)
