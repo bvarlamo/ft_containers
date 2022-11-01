@@ -6,7 +6,7 @@
 /*   By: bvarlamo <bvarlamo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 12:47:07 by bvarlamo          #+#    #+#             */
-/*   Updated: 2022/10/31 16:16:34 by bvarlamo         ###   ########.fr       */
+/*   Updated: 2022/11/01 17:13:42 by bvarlamo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -518,7 +518,7 @@ namespace ft
 			pointer operator->() const 
 			{
 				pointer tmp = (*current_node).data;
-				return tmp;
+				return &*tmp;
 			}
 	};
 	

@@ -107,6 +107,17 @@ namespace	ft
 			typedef ft::reverse_iterator<iterator>				reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
 			
+			void transplant(node* del, node* sib)
+			{
+				if (del->p == NULL)
+					root = sib;
+				else if (del == del->p->left)
+					del->p->left = sib;
+				else
+					del->p->right = sib;
+				sib->p = del->p;
+			}
+
 			void left_rotate(node* x)
 			{
 				node*	y = x->right;
@@ -139,6 +150,162 @@ namespace	ft
 					x->p->left = y;
 				y->right = x;
 				x->p = y;
+			}
+
+			void	delete_fixup(node* x)
+			{
+				node* w;
+				while (x != root && x->isred == false)
+				{
+					if (x == x->p->left)
+					{
+						w = x->p->right;
+						if (w->isred == true)
+						{
+							w->isred = false;
+							x->p->isred = true;
+							left_rotate(x->p);
+							w = x->p->right;
+						}
+						if (w->left->isred == false && w->right->isred == false)
+						{
+							w->isred = true;
+							x = x->p;
+						}
+						else
+						{
+							if (w->right->isred == false)
+							{
+								w->left->isred = false;
+								w->isred = true;
+								right_rotate(w);
+								w = x->p->right;
+							}
+							w->isred = x->p->isred;
+							x->p->isred = false;
+							w->right->isred = false;
+							left_rotate(x->p);
+							x = root;
+						}
+					}
+					else
+					{
+						w = x->p->left;
+						if (w->isred == true)
+						{
+							w->isred = false;
+							x->p->isred = true;
+							right_rotate(x->p);
+							w = x->p->left;
+						}
+						if (w->right->isred == false && w->left->isred == false)
+						{
+							w->isred = true;
+							x = x->p;
+						}
+						else
+						{
+							if (w->left->isred == false)
+							{
+								w->right->isred = false;
+								w->isred = true;
+								left_rotate(w);
+								w = x->p->left;
+							}
+							w->isred = x->p->isred;
+							x->p->isred = false;
+							w->left->isred = false;
+							right_rotate(x->p);
+							x = root;
+						}
+					}
+				}
+				x->isred = false;
+			}
+
+			void	delete_node(node* del)
+			{
+				node* x;
+				node* y = del;
+				bool y_orig_color =  y->isred;
+				if (del->left->data == NULL)
+				{
+					x = del->right;
+					// delete del->left;
+					transplant(del, del->right);
+					del->right = NULL;
+				}
+				else if (del->right->data == NULL)
+				{
+					x = del->left;
+					// delete del->right;
+					transplant(del, del->left);
+					del->left = NULL;
+				}
+				else
+				{
+					y = del->right;
+					while (y->left->data)
+						y = y->left;
+					y_orig_color = y->isred;
+					x = y->right;
+					if (y->p == del)
+						x->p = y;
+					else
+					{
+						transplant(y, y->right);
+						y->right = del->right;
+						y->right->p = y;
+					}
+					transplant(del, y);
+					delete y->left;
+					y->left = del->left;
+					y->left->p = y;
+					y->isred = del->isred;
+					del->right = NULL;
+					del->left = NULL;
+				}
+			
+				if (y_orig_color == false)
+					delete_fixup(x);
+				delete del;
+			}
+
+			size_type erase (const key_type& k)
+			{
+				current = &root;
+				while ((*current)->data != NULL)
+				{
+					if ((*current)->data && (*current)->data->first == k)
+					{
+	
+						delete_node((*current));
+						
+						return (1);
+					}
+					else if (value_compare(_comp).comp((*current)->data->first, k))
+						current = &(*current)->right;
+					else
+						current = &(*current)->left;
+				}
+				return (0);
+			}
+
+			void erase (iterator position)
+			{
+				erase(position->first);
+			}
+
+			void erase (iterator first, iterator last)
+			{
+				iterator tmp = first;
+				iterator t = first;
+				while (&*tmp != &*last)
+				{
+					tmp++;
+					erase(t->first);
+					t = tmp;
+				}
 			}
 
 			node* insert_fixup(node* z)

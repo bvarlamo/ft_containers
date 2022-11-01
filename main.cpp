@@ -85,6 +85,8 @@ int	main(void)
 	b.clear();
 	std::cout<<"size: "<<b.size()<<std::endl;
 	b = x;
+	ft::map<std::string, std::string>::iterator bb = b.find("f");
+	b.erase(bb, --b.end());
 	ft::map<std::string, std::string>::iterator b1 = b.begin();
 	ft::map<std::string, std::string>::iterator b2 = b.end();
 	while (b1 != b2)
@@ -95,7 +97,7 @@ int	main(void)
 	std::cout<<std::endl;
 	
 	std::cout<<"count: "<<b.count("99")<<std::endl;
-	std::cout<<"find: "<<b.find("9")->second<<std::endl;
+	// std::cout<<"find: "<<b.find("9")->second<<std::endl;
 	// ft::map<std::string, std::string>::reverse_iterator itt;
 	// itt = it;
 	// // b.print();
@@ -164,6 +166,9 @@ int	main(void)
 	f.clear();
 	std::cout<<"size: "<<f.size()<<std::endl;
 	f = y;
+	std::map<std::string, std::string>::iterator ff = f.find("f");
+	f.erase(ff, --f.end());
+	std::cout<<"FFF: "<<ff->first<<std::endl;
 	std::map<std::string, std::string>::iterator f1 = f.begin();
 	std::map<std::string, std::string>::iterator f2 = f.end();
 	while (f1 != f2)
@@ -174,7 +179,7 @@ int	main(void)
 	std::cout<<std::endl;
 
 	std::cout<<"count: "<<f.count("99")<<std::endl;
-	std::cout<<"find: "<<f.find("9")->second<<std::endl;
+	// std::cout<<"find: "<<f.find("9")->second<<std::endl;
 	// std::map<std::string, std::string>::reverse_iterator it1t;
 	// it1t = it1;
 
