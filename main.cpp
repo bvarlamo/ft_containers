@@ -86,8 +86,10 @@ int	main(void)
 	std::cout<<"size: "<<b.size()<<std::endl;
 	b = x;
 	ft::map<std::string, std::string>::iterator bb = b.find("f");
-	b.erase(bb, --b.end());
 	ft::map<std::string, std::string>::iterator b1 = b.begin();
+	b.erase(bb, --b.end());
+	// swap(b, x);
+	// ft::map<std::string, std::string>::iterator b1 = b.begin();
 	ft::map<std::string, std::string>::iterator b2 = b.end();
 	while (b1 != b2)
 	{
@@ -97,6 +99,20 @@ int	main(void)
 	std::cout<<std::endl;
 	
 	std::cout<<"count: "<<b.count("99")<<std::endl;
+	std::cout<<"size: "<<b.size()<<std::endl;
+	ft::map<std::string, std::string>::const_iterator b3 = b.lower_bound("1");
+	ft::map<std::string, std::string>::const_iterator b4 = b.upper_bound("e");
+	while (b3 != b4)
+	{
+		std::cout<<b3->first;
+		b3++;
+	}
+	std::cout<<std::endl;
+
+	ft::pair<ft::map<std::string, std::string>::const_iterator, ft::map<std::string, std::string>::const_iterator> b5 = b.equal_range("e");
+	std::cout<<"Pair: "<<b5.first->first<<" = "<<b5.second->first<<std::endl;
+
+	std::cout<<"oper: "<<(b >= x)<<std::endl;
 	// std::cout<<"find: "<<b.find("9")->second<<std::endl;
 	// ft::map<std::string, std::string>::reverse_iterator itt;
 	// itt = it;
@@ -167,9 +183,10 @@ int	main(void)
 	std::cout<<"size: "<<f.size()<<std::endl;
 	f = y;
 	std::map<std::string, std::string>::iterator ff = f.find("f");
-	f.erase(ff, --f.end());
-	std::cout<<"FFF: "<<ff->first<<std::endl;
 	std::map<std::string, std::string>::iterator f1 = f.begin();
+	f.erase(ff, --f.end());
+	// swap(f, y);
+	// std::map<std::string, std::string>::iterator f1 = f.begin();
 	std::map<std::string, std::string>::iterator f2 = f.end();
 	while (f1 != f2)
 	{
@@ -179,6 +196,20 @@ int	main(void)
 	std::cout<<std::endl;
 
 	std::cout<<"count: "<<f.count("99")<<std::endl;
+	std::cout<<"size: "<<f.size()<<std::endl;
+	std::map<std::string, std::string>::const_iterator f3 = f.lower_bound("1");
+	std::map<std::string, std::string>::const_iterator f4 = f.upper_bound("e");
+	while (f3 != f4)
+	{
+		std::cout<<f3->first;
+		f3++;
+	}
+	std::cout<<std::endl;
+
+	std::pair<std::map<std::string, std::string>::const_iterator, std::map<std::string, std::string>::const_iterator> f5 = f.equal_range("e");
+	std::cout<<"Pair: "<<f5.first->first<<" = "<<f5.second->first<<std::endl;
+	
+	std::cout<<"oper: "<<(f >= y)<<std::endl;
 	// std::cout<<"find: "<<f.find("9")->second<<std::endl;
 	// std::map<std::string, std::string>::reverse_iterator it1t;
 	// it1t = it1;

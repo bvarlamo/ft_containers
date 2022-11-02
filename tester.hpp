@@ -8,6 +8,7 @@
 # include <fstream>
 # include "ft.hpp"
 # include "vector.hpp"
+# include "map.hpp"
 
 # define NORMAL "\033[0;37m"
 # define UNDERLINE "\033[4m"
@@ -50,7 +51,7 @@ bool printBoolResult(std::fstream& fs, bool stl_bool, bool ft_bool)
 
 void test_vector();
 // void test_list();
-// void test_map();
+void test_map();
 // void test_stack();
 // void test_queue();
 // void test_deque();

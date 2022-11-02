@@ -30,8 +30,6 @@ namespace	ft
 			typedef typename Allocator::const_pointer			const_pointer;
 
 
-		private:
-
 			class value_compare : public std::binary_function<value_type, value_type, bool>
 			{
 				friend class map;
@@ -50,6 +48,8 @@ namespace	ft
 					return comp(x.first, y.first);
 				}
 			};
+
+		private:
 			struct	node
 			{
 				value_type*		data;
@@ -102,10 +102,10 @@ namespace	ft
 			key_compare		_comp;
 
 		public:
-			typedef ft::map_iterator<node, value_type, node>	iterator;
-			typedef const iterator								const_iterator;
-			typedef ft::reverse_iterator<iterator>				reverse_iterator;
-			typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
+			typedef ft::map_iterator<node, value_type, node>			iterator;
+			typedef ft::map_const_iterator<node, value_type, node>		const_iterator;
+			typedef ft::reverse_iterator<iterator>						reverse_iterator;
+			typedef ft::reverse_iterator<const_iterator>				const_reverse_iterator;
 			
 			void transplant(node* del, node* sib)
 			{
@@ -280,7 +280,7 @@ namespace	ft
 					{
 	
 						delete_node((*current));
-						
+						_size--;
 						return (1);
 					}
 					else if (value_compare(_comp).comp((*current)->data->first, k))
@@ -424,7 +424,7 @@ namespace	ft
 				node* tmp = root;
 				while (tmp && tmp->left && tmp->right)
 					tmp = tmp->right;
-				iterator tm(tmp, root);
+				const_iterator tm(tmp, root);
 				const_iterator f(tm);
 				return (f);
 			}
@@ -434,7 +434,7 @@ namespace	ft
 				node* tmp = root;
 				while (tmp && tmp->left && tmp->left->data)
 					tmp = tmp->left;
-				iterator tm(tmp, root);
+				const_iterator tm(tmp, root);
 				const_iterator f(tm);
 				return (f);
 			}
@@ -628,7 +628,180 @@ namespace	ft
 				}
 				return (end());
 			}
+
+			iterator lower_bound( const Key& key )
+			{
+				node* tmp = root;
+				node* pr;
+				while (tmp->data != NULL)
+				{
+					pr = tmp;
+					if (tmp->data && tmp->data->first == key)
+						return(iterator(tmp, root));
+					else if (_comp(tmp->data->first, key))
+						tmp = tmp->right;
+					else
+						tmp = tmp->left;
+				}
+				iterator t(pr, root);
+				if (&*t == &*(end()))
+					return (end());
+				if (tmp == tmp->p->left)
+					return (t);
+				t++;
+				return (t);
+			}
+
+			const_iterator lower_bound( const Key& key ) const
+			{
+				node* tmp = root;
+				node* pr;
+				while (tmp->data != NULL)
+				{
+					pr = tmp;
+					if (tmp->data && tmp->data->first == key)
+						return(const_iterator(tmp, root));
+					else if (_comp(tmp->data->first, key))
+						tmp = tmp->right;
+					else
+						tmp = tmp->left;
+				}
+				const_iterator t(pr, root);
+				if (&*t == &*(end()))
+					return (end());
+				if (tmp == tmp->p->left)
+					return (t);
+				t++;
+				return (t);
+			}
+
+			iterator upper_bound( const Key& key )
+			{
+				node* tmp = root;
+				node* pr;
+				while (tmp->data != NULL)
+				{
+					pr = tmp;
+					if (tmp->data && tmp->data->first == key)
+					{
+						iterator t(tmp, root);
+						t++;
+						return (t);
+					}
+					else if (value_compare(_comp).comp(tmp->data->first, key))
+						tmp = tmp->right;
+					else
+						tmp = tmp->left;
+				}
+				iterator t(pr, root);
+				if (&*t == &*(end()))
+					return (end());
+				if (tmp == tmp->p->left)
+					return (t);
+				t++;
+				return (t);
+			}
+
+			const_iterator upper_bound( const Key& key ) const
+			{
+				node* tmp = root;
+				node* pr;
+				while (tmp->data != NULL)
+				{
+					pr = tmp;
+					if (tmp->data && tmp->data->first == key)
+					{
+						const_iterator t(tmp, root);
+						t++;
+						return (t);
+					}
+					else if (value_compare(_comp).comp(tmp->data->first, key))
+						tmp = tmp->right;
+					else
+						tmp = tmp->left;
+				}
+				const_iterator t(pr, root);
+				if (&*t == &*(end()))
+					return (end());
+				if (tmp == tmp->p->left)
+					return (t);
+				t++;
+				return (t);
+			}
+
+			ft::pair<iterator,iterator> equal_range( const Key& key )
+			{
+				iterator low = lower_bound(key);
+				iterator up = upper_bound(key);
+				return (ft::pair<iterator, iterator>(low, up));
+			}
+
+			ft::pair<const_iterator,const_iterator> equal_range( const Key& key ) const
+			{
+				const_iterator low = lower_bound(key);
+				const_iterator up = upper_bound(key);
+				return (ft::pair<const_iterator, const_iterator>(low, up));
+			}
+
+			key_compare key_comp() const
+			{
+				return (key_compare());
+			}
+
+			value_compare value_comp() const
+			{
+				return (value_compare(key_compare()));
+			}
 	};
 
+	template< class Key, class T, class Compare, class Alloc >
+	void swap( ft::map<Key,T,Compare,Alloc>& lhs, ft::map<Key,T,Compare,Alloc>& rhs )
+	{
+		lhs.swap(rhs);
+	}
+
+	template< class Key, class T, class Compare, class Alloc >
+	bool operator==( const ft::map<Key,T,Compare,Alloc>& lhs,
+                 const ft::map<Key,T,Compare,Alloc>& rhs )
+	{
+		if (lhs.size() != rhs.size())
+			return false;
+		return (ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
+	}
+
+	template< class Key, class T, class Compare, class Alloc >
+	bool operator!=( const ft::map<Key,T,Compare,Alloc>& lhs,
+                 const ft::map<Key,T,Compare,Alloc>& rhs )
+	{
+		return !(lhs == rhs);
+	}
+
+	template< class Key, class T, class Compare, class Alloc >
+	bool operator<( const ft::map<Key,T,Compare,Alloc>& lhs,
+                const ft::map<Key,T,Compare,Alloc>& rhs )
+	{
+		return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+	}
+
+	template< class Key, class T, class Compare, class Alloc >
+	bool operator<=( const ft::map<Key,T,Compare,Alloc>& lhs,
+                 const ft::map<Key,T,Compare,Alloc>& rhs )
+	{
+		return !(rhs < lhs);
+	}
+
+	template< class Key, class T, class Compare, class Alloc >
+	bool operator>( const ft::map<Key,T,Compare,Alloc>& lhs,
+                const ft::map<Key,T,Compare,Alloc>& rhs )
+	{
+		return (rhs < lhs);
+	}
+
+	template< class Key, class T, class Compare, class Alloc >
+	bool operator>=( const ft::map<Key,T,Compare,Alloc>& lhs,
+                 const ft::map<Key,T,Compare,Alloc>& rhs )
+	{
+		return !(lhs < rhs);
+	}
 }
 #endif

@@ -7,14 +7,10 @@
 # include "tester.hpp"
 # include "map.hpp"
 
-int	main()
+int main()
 {
-	test_vector();
+    test_vector();
     std::cout << "\n";
-	// test_map();
-    // std::cout << "\n";
-
-	return (0);
 }
 
 template <class T>
