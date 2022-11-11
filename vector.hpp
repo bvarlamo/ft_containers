@@ -6,7 +6,7 @@
 /*   By: bvarlamo <bvarlamo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 09:28:09 by bvarlamo          #+#    #+#             */
-/*   Updated: 2022/11/01 17:13:37 by bvarlamo         ###   ########.fr       */
+/*   Updated: 2022/11/11 15:17:28 by bvarlamo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 #define VECTOR_HPP
 
 #include <memory>
-#include "ft.hpp"
+#include "utils.hpp"
+#include "iterator.hpp"
 #include <iterator>
 #include <iostream>
 
@@ -32,13 +33,13 @@ namespace	ft
 			typedef const value_type&							const_reference;
 			typedef typename allocator_type::pointer			pointer;
 			typedef typename allocator_type::const_pointer		const_pointer;
-			typedef pointer										iterator;
-			typedef const_pointer								const_iterator;
+			typedef ft::random_access_iterator<pointer>				iterator;
+			typedef ft::random_const_access_iterator<pointer>			const_iterator;
 			typedef ft::reverse_iterator<iterator>				reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
 		private:
-			T*											_data;
-			T*											_end;
+			pointer											_data;
+			pointer											_end;
 			std::size_t									_size;
 			std::size_t									_capacity;
 			allocator_type								_alloc;
@@ -48,7 +49,7 @@ namespace	ft
 			{
 				_alloc = alloc;
 				_data = _alloc.allocate(0);
-				_end = end();
+				// _end = end();
 				_size = 0;
 				_capacity = 0;
 			}

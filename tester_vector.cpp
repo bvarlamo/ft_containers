@@ -3,7 +3,6 @@
 # include <string>
 
 # include "vector.hpp"
-# include "ft.hpp"
 # include "tester.hpp"
 # include "map.hpp"
 

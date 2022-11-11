@@ -6,9 +6,6 @@
 # include <iostream>
 # include <string>
 # include <fstream>
-# include "ft.hpp"
-# include "vector.hpp"
-# include "map.hpp"
 
 # define NORMAL "\033[0;37m"
 # define UNDERLINE "\033[4m"

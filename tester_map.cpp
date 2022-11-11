@@ -1,13 +1,24 @@
 #include <map>
-#include "map.hpp"
-#include "ft.hpp"
 #include "tester.hpp"
+#include "map.hpp"
+
+#include <stack>
 
 int main()
 {
+    // test_vector();
+    // std::cout << "\n";
+    // test_list();
+    // std::cout << "\n";
     test_map();
     std::cout << "\n";
+    // test_deque();
+    // std::cout << "\n";
+    // test_stack();
+    // std::cout << "\n";
+    // test_queue();
 }
+
 
 template <class Ta, class Tb>
 std::string equalContent(
@@ -39,14 +50,17 @@ bool printMapAttributes(
 	/* STL Values */
 	std::string stl_empty = ((stl_map.empty() == 1) ? "true" : "false");
 	size_t stl_size = stl_map.size();
+	size_t stl_max_size = stl_map.max_size();
 
 	/* FT Values */
 	std::string ft_empty = ((ft_map.empty() == 1) ? "true" : "false");
 	size_t ft_size = ft_map.size();
+	size_t ft_max_size = ft_map.max_size();
 
 	/* FT Result compare values */
 	bool empty = equalbool(ft_empty, stl_empty);
 	bool size = equalbool(ft_size, stl_size);
+	bool max_size = equalbool(ft_max_size, stl_max_size);
 	std::string content = equalContent(stl_map, ft_map);
 	
 	fs << "\n══════════════════════════════════════════════════════════════\n";
@@ -54,6 +68,7 @@ bool printMapAttributes(
 	fs << "STL : \n";
 	fs << "Empty       : " << stl_empty  << std::endl;
 	fs << "Size        : " << stl_size  << std::endl;
+	fs << "Max size    : " << stl_max_size  << std::endl;
 	fs << "Content     : [";
 	
 	typename std::map<Ta, Tb>::const_iterator stl_it;
@@ -73,6 +88,7 @@ bool printMapAttributes(
 	fs << "FT : \n";
 	fs << "Empty    [" << equal(ft_empty, stl_empty) << "]: " << ft_empty  << std::endl;
 	fs << "Size     [" << equal(ft_size, stl_size) << "]: " << ft_size  << std::endl;
+	fs << "Max size [" << equal(ft_max_size, stl_max_size) << "]: " << ft_max_size  << std::endl;
 
 	fs << "Content  [" << content << "]: [";
 
@@ -95,6 +111,8 @@ bool printMapAttributes(
 		return (false);
 	else if (size == false)
 		return (false);
+	else if (max_size == false)
+		return (false);
 	else if (content == "✘")
 		return (false);
 	return (true);
@@ -105,7 +123,7 @@ void test_map()
 
 	std::cout << UNDERLINE << "MAP :\n" << NORMAL ;
 
-	mkdir("./maps_output", 0777);
+	mkdir("./tester/maps_output", 0777);
 	
 	std::fstream fs;
 
@@ -117,7 +135,7 @@ void test_map()
 		std::map<int, std::string> stl_default_map;
 		ft::map<int, std::string> ft_default_map;
 
-		fs.open("./maps_output/constructor_default", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/constructor_default", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		std::cout << ((printMapAttributes(fs, stl_default_map, ft_default_map) == true) ? "[OK]" : "[NOP]");
 
 		fs << "\nCode executed:\n";
@@ -143,7 +161,7 @@ void test_map()
 			ft_map.insert(ft::make_pair(range_int[i], range_str[i]));
 		}
 
-		fs.open("./maps_output/constructor_range", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/constructor_range", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		
 		printMapAttributes(fs, stl_map, ft_map);
 
@@ -185,7 +203,7 @@ void test_map()
 			ft_map.insert(ft::make_pair(range_int[i], range_str[i]));
 		}
 
-		fs.open("./maps_output/constructor_copy", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/constructor_copy", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		
 		printMapAttributes(fs, stl_map, ft_map);
 
@@ -227,7 +245,7 @@ void test_map()
 			ft_map.insert(ft::make_pair(range_int[i], range_str[i]));
 		}
 
-		fs.open("./maps_output/operator_assign", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/operator_assign", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		
 		printMapAttributes(fs, stl_map, ft_map);
 
@@ -272,7 +290,7 @@ void test_map()
 			ft_map.insert(ft::make_pair(range_int[i], range_str[i]));
 		}
 
-		fs.open("./maps_output/begin", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/begin", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		
 		printMapAttributes(fs, stl_map, ft_map);
 		std::cout << "[";
@@ -311,7 +329,7 @@ void test_map()
 			ft_map.insert(ft::make_pair(range_int[i], range_str[i]));
 		}
 
-		fs.open("./maps_output/begin_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/begin_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		
 		std::map<int, std::string>::const_iterator stl_it = stl_map.begin();
 		ft::map<int, std::string>::const_iterator ft_it = ft_map.begin();
@@ -355,7 +373,7 @@ void test_map()
 			ft_map.insert(ft::make_pair(range_int[i], range_str[i]));
 		}
 
-		fs.open("./maps_output/end", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/end", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		
 		std::map<int, std::string>::iterator stl_it = stl_map.end();
 		ft::map<int, std::string>::iterator ft_it = ft_map.end();
@@ -405,7 +423,7 @@ void test_map()
 			ft_map.insert(ft::make_pair(range_int[i], range_str[i]));
 		}
 
-		fs.open("./maps_output/end_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/end_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		
 		std::map<int, std::string>::const_iterator stl_it = stl_map.end();
 		ft::map<int, std::string>::const_iterator ft_it = ft_map.end();
@@ -455,7 +473,7 @@ void test_map()
 			ft_map.insert(ft::make_pair(range_int[i], range_str[i]));
 		}
 
-		fs.open("./maps_output/reverse_begin", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/reverse_begin", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		
 		std::map<int, std::string>::reverse_iterator stl_it = stl_map.rbegin();
 		ft::map<int, std::string>::reverse_iterator ft_it = ft_map.rbegin();
@@ -505,7 +523,7 @@ void test_map()
 			ft_map.insert(ft::make_pair(range_int[i], range_str[i]));
 		}
 
-		fs.open("./maps_output/reverse_begin_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/reverse_begin_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		
 		std::map<int, std::string>::const_reverse_iterator stl_it = stl_map.rbegin();
 		ft::map<int, std::string>::const_reverse_iterator ft_it = ft_map.rbegin();
@@ -550,7 +568,7 @@ void test_map()
 			ft_map.insert(ft::make_pair(range_int[i], range_str[i]));
 		}
 
-		fs.open("./maps_output/reverse_end", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/reverse_end", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		
 		std::map<int, std::string>::reverse_iterator stl_it = stl_map.rend();
 		ft::map<int, std::string>::reverse_iterator ft_it = ft_map.rend();
@@ -601,17 +619,15 @@ void test_map()
 			ft_map.insert(ft::make_pair(range_int[i], range_str[i]));
 		}
 
-		fs.open("./maps_output/reverse_end_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/reverse_end_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		
 		std::map<int, std::string>::const_reverse_iterator stl_it = stl_map.rend();
 		ft::map<int, std::string>::const_reverse_iterator ft_it = ft_map.rend();
 
 		printMapAttributes(fs, stl_map, ft_map);
 
-		--stl_it;
-		--ft_it;
-		--stl_it;
-		--ft_it;
+		--(--stl_it);
+		--(--ft_it);
 
 		std::cout << "[";
 		std::cout << ((printSingleValue(fs, (*stl_it).first, (*ft_it).first) == true) ? "[OK]" : "[NOP]");
@@ -647,7 +663,7 @@ void test_map()
 		std::map<int, std::string> stl_default_map;
 		ft::map<int, std::string> ft_default_map;
 
-		fs.open("./maps_output/empty_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/empty_true", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		printMapAttributes(fs, stl_default_map, ft_default_map);
 		std::cout << ((printBoolResult(fs, stl_default_map.empty(), ft_default_map.empty()) == true) ? "[OK]" : "[NOP]");
 
@@ -674,7 +690,7 @@ void test_map()
 			ft_map.insert(ft::make_pair(range_int[i], range_str[i]));
 		}
 
-		fs.open("./maps_output/empty_false", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/empty_false", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		
 		printMapAttributes(fs, stl_map, ft_map);
 		std::cout << ((printBoolResult(fs, stl_map.empty(), ft_map.empty()) == true) ? "[OK]" : "[NOP]");
@@ -710,7 +726,7 @@ void test_map()
 			ft_map.insert(ft::make_pair(range_int[i], range_str[i]));
 		}
 
-		fs.open("./maps_output/size", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/size", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		
 		printMapAttributes(fs, stl_map, ft_map);
 		std::cout << "[";
@@ -749,7 +765,7 @@ void test_map()
 		std::map<int, std::string> stl_default_map;
 		ft::map<int, std::string> ft_default_map;
 
-		fs.open("./maps_output/max_size", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/max_size", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		printMapAttributes(fs, stl_default_map, ft_default_map);
 		std::cout << ((printSingleValue(fs, stl_default_map.max_size(), ft_default_map.max_size()) == true) ? "[OK]" : "[NOP]");
 
@@ -779,7 +795,7 @@ void test_map()
 			ft_map.insert(ft::make_pair(range_int[i], range_str[i]));
 		}
 
-		fs.open("./maps_output/operator_at", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/operator_at", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		
 		printMapAttributes(fs, stl_map, ft_map);
 
@@ -820,13 +836,10 @@ void test_map()
 	{
 		std::map<int, std::string> stl_map;
 		ft::map<int, std::string> ft_map;
-
 		stl_map.insert(std::make_pair(42, "La famille"));
 		ft_map.insert(ft::make_pair(42, "La famille"));
-
-		fs.open("./maps_output/insert_single", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/insert_single", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		std::cout << ((printMapAttributes(fs, stl_map, ft_map) == true) ? "[OK]" : "[NOP]");
-
 		fs << "\nCode executed:\n";
 		fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
 		fs << "ft::map<int, std::string> ft_map;\n";
@@ -852,7 +865,7 @@ void test_map()
 			ft_map.insert(ft::make_pair(range_int[i], range_str[i]));
 		}
 
-		fs.open("./maps_output/insert_hint", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/insert_hint", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		printMapAttributes(fs, stl_map, ft_map);
 		
 		stl_map.insert(++(stl_map.begin()), std::make_pair(42, "Nice"));
@@ -897,7 +910,7 @@ void test_map()
 			ft_map_two.insert(ft::make_pair(range_int[i] + 266, range_str[i] + "_two"));
 		}
 
-		fs.open("./maps_output/insert_range", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/insert_range", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		printMapAttributes(fs, stl_map_one, ft_map_one);
 		printMapAttributes(fs, stl_map_two, ft_map_two);
 		
@@ -950,7 +963,7 @@ void test_map()
 			ft_map.insert(ft::make_pair(range_int[i], range_str[i]));
 		}
 
-		fs.open("./maps_output/erase_single", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/erase_single", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		printMapAttributes(fs, stl_map, ft_map);
 		
 		stl_map.erase(stl_map.begin());
@@ -991,7 +1004,7 @@ void test_map()
 			ft_map.insert(ft::make_pair(range_int[i], range_str[i]));
 		}
 
-		fs.open("./maps_output/erase_key", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/erase_key", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		printMapAttributes(fs, stl_map, ft_map);
 		
 		stl_map.erase(-98);
@@ -1032,7 +1045,7 @@ void test_map()
             ft_map.insert(ft::make_pair(range_int[i], range_str[i]));
         }
 
-		fs.open("./maps_output/erase_range", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/erase_range", std::fstream::in | std::fstream::out | std::fstream::trunc);
         printMapAttributes(fs, stl_map, ft_map);
 	    
 		std::map<int, std::string>::iterator stl_it_beg = stl_map.begin();
@@ -1100,7 +1113,7 @@ void test_map()
 			ft_map_two.insert(ft::make_pair(range_int[i] + 120, range_str[i]));
 		}
 
-		fs.open("./maps_output/swap", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/swap", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		printMapAttributes(fs, stl_map_one, ft_map_one);
 		printMapAttributes(fs, stl_map_two, ft_map_two);
 		
@@ -1153,9 +1166,8 @@ void test_map()
 			ft_map.insert(ft::make_pair(range_int[i], range_str[i]));
 		}
 
-		fs.open("./maps_output/clear", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/clear", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		printMapAttributes(fs, stl_map, ft_map);
-		
 		stl_map.clear();
 		ft_map.clear();
 
@@ -1191,7 +1203,7 @@ void test_map()
 		bool stl_res = stl_key(42, 99);
 		bool ft_res = ft_key(42, 99);
 
-		fs.open("./maps_output/key_comp", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/key_comp", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		std::cout << ((printBoolResult(fs, stl_res, ft_res) == true) ? "[OK]" : "[NOP]");
 
 		fs << "\nCode executed:\n";
@@ -1213,7 +1225,7 @@ void test_map()
 		bool stl_res = stl_key(std::make_pair(99, "End"), std::make_pair(42, "Noice"));
 		bool ft_res = ft_key(ft::make_pair(99, "End"), ft::make_pair(42, "Noice"));
 
-		fs.open("./maps_output/value_comp", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/value_comp", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		std::cout << ((printBoolResult(fs, stl_res, ft_res) == true) ? "[OK]" : "[NOP]");
 
 		fs << "\nCode executed:\n";
@@ -1244,7 +1256,7 @@ void test_map()
 			ft_map.insert(ft::make_pair(range_int[i], range_str[i]));
 		}
 
-		fs.open("./maps_output/find_exist", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/find_exist", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
 		std::map<int, std::string>::iterator stl_it = stl_map.find(42);		
 		ft::map<int, std::string>::iterator ft_it = ft_map.find(42);
@@ -1289,7 +1301,7 @@ void test_map()
 			ft_map.insert(ft::make_pair(range_int[i], range_str[i]));
 		}
 
-		fs.open("./maps_output/find_not_exist", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/find_not_exist", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
 		std::map<int, std::string>::iterator stl_it = stl_map.find(42);		
 		ft::map<int, std::string>::iterator ft_it = ft_map.find(42);
@@ -1331,7 +1343,7 @@ void test_map()
 			ft_map.insert(ft::make_pair(range_int[i], range_str[i]));
 		}
 
-		fs.open("./maps_output/find_const_exist", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/find_const_exist", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
 		std::map<int, std::string>::const_iterator stl_it = stl_map.find(99);		
 		ft::map<int, std::string>::const_iterator ft_it = ft_map.find(99);
@@ -1376,7 +1388,7 @@ void test_map()
 			ft_map.insert(ft::make_pair(range_int[i], range_str[i]));
 		}
 
-		fs.open("./maps_output/count", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/count", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		
 		printMapAttributes(fs, stl_map, ft_map);
 
@@ -1408,7 +1420,6 @@ void test_map()
 	{
 		const int range_int[] = {351, -999, 5, 76, 61};
 		const std::string range_str[] = {"One", "Two", "Three", "Four", "Five"};
-
 		std::map<int, std::string> stl_map;
 		ft::map<int, std::string> ft_map;
 
@@ -1418,7 +1429,7 @@ void test_map()
 			ft_map.insert(ft::make_pair(range_int[i], range_str[i]));
 		}
 
-		fs.open("./maps_output/lower_bound", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/lower_bound", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		
 		printMapAttributes(fs, stl_map, ft_map);
 
@@ -1463,7 +1474,7 @@ void test_map()
 			ft_map.insert(ft::make_pair(range_int[i], range_str[i]));
 		}
 
-		fs.open("./maps_output/lower_bound_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/lower_bound_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		
 		printMapAttributes(fs, stl_map, ft_map);
 
@@ -1508,7 +1519,7 @@ void test_map()
 			ft_map.insert(ft::make_pair(range_int[i], range_str[i]));
 		}
 
-		fs.open("./maps_output/upper_bound", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/upper_bound", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		
 		printMapAttributes(fs, stl_map, ft_map);
 
@@ -1553,7 +1564,7 @@ void test_map()
 			ft_map.insert(ft::make_pair(range_int[i], range_str[i]));
 		}
 
-		fs.open("./maps_output/upper_bound_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/upper_bound_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		
 		printMapAttributes(fs, stl_map, ft_map);
 
@@ -1598,7 +1609,7 @@ void test_map()
 			ft_map.insert(ft::make_pair(range_int[i], range_str[i]));
 		}
 
-		fs.open("./maps_output/equal_range_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
+		fs.open("./tester/maps_output/equal_range_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
 		
 		printMapAttributes(fs, stl_map, ft_map);
 

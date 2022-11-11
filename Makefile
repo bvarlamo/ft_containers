@@ -6,7 +6,7 @@
 #    By: bvarlamo <bvarlamo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/04 09:53:27 by bvarlamo          #+#    #+#              #
-#    Updated: 2022/11/02 17:15:20 by bvarlamo         ###   ########.fr        #
+#    Updated: 2022/11/11 13:43:29 by bvarlamo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ FLAGS = -Wall -Werror -Wextra -std=c++98
 
 RM = rm -f
 
-SRC = main.cpp
+SRC = tester_vector.cpp
 
 OBJ = $(SRC:.cpp=.o)
 
