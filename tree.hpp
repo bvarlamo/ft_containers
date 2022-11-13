@@ -80,7 +80,7 @@ namespace ft
 			typedef ft::reverse_iterator<const_iterator>			const_reverse_iterator;
 			typedef typename value_type::first_type					key_type;
 			typedef typename value_type::second_type				mapped_type;
-
+			
 		private:
 			typedef typename Allocator::template rebind<node>::other	node_alloc;
 			typedef typename node_alloc::pointer						pointer;

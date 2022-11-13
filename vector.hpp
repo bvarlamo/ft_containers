@@ -6,7 +6,7 @@
 /*   By: bvarlamo <bvarlamo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 09:28:09 by bvarlamo          #+#    #+#             */
-/*   Updated: 2022/11/13 17:50:57 by bvarlamo         ###   ########.fr       */
+/*   Updated: 2022/11/13 18:59:49 by bvarlamo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ namespace	ft
 			typedef T											value_type;
 			typedef Allocator									allocator_type;
 			typedef typename allocator_type::size_type			size_type;
-			typedef typename allocator_type::difference_type	difference_type;
+			// typedef typename allocator_type::difference_type	difference_type;
+			typedef typename ft::iterator_traits<T*>::difference_type	difference_type;
 			typedef value_type&									reference;
 			typedef const value_type&							const_reference;
 			typedef typename allocator_type::pointer			pointer;

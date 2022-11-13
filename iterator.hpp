@@ -11,12 +11,17 @@ namespace ft
 	class random_access_iterator
 	{
 		public:
-			typedef typename ft::random_access_iterator_tag							iterator_category;
-			typedef T																value_type;
-			typedef T*           			 										pointer;
-			typedef T&          			  										reference;
-			typedef std::ptrdiff_t													difference_type;
-			typedef T															iterator_type;
+			typedef typename std::random_access_iterator_tag							iterator_category;
+			// typedef T																value_type;
+			// typedef T*           			 										pointer;
+			// typedef T&          			  										reference;
+			// typedef std::ptrdiff_t													difference_type;
+			typedef typename ft::iterator_traits<T*>::value_type 		value_type;
+			typedef typename ft::iterator_traits<T*>::reference 		reference;
+			typedef typename ft::iterator_traits<T*>::pointer			pointer;
+			typedef typename ft::iterator_traits<T*>::difference_type	difference_type;
+			
+			typedef T																iterator_type;
 
 
 		private:
@@ -174,11 +179,13 @@ namespace ft
 	class tree_iterator
 	{
 		public:
-			typedef typename ft::bidirectional_iterator_tag							iterator_category;
+			typedef typename std::bidirectional_iterator_tag							iterator_category;
 			typedef _value_type														value_type;
 			typedef _value_type*            										pointer;
 			typedef _value_type&            										reference;
 			typedef std::ptrdiff_t													difference_type;
+
+
 			node*																	current_node;
 
 
@@ -274,18 +281,18 @@ namespace ft
 			}
 	};
 	
-	template<class node, class _value_type>
+	template<class node, class _value_type, class constval>
 	bool operator==( const ft::tree_iterator<node, _value_type>& lhs,
-                 const ft::tree_iterator<node, _value_type>& rhs )   
+                 const ft::tree_iterator<node, constval>& rhs )   
 	{
 		if (lhs.current_node != rhs.current_node)
 			return false;
 		return true;
 	}
 
-	template<class node, class _value_type>
+	template<class node, class _value_type, class constval>
 	bool operator!=( const ft::tree_iterator<node, _value_type>& lhs,
-                 const ft::tree_iterator<node, _value_type>& rhs )   
+                 const ft::tree_iterator<node, constval>& rhs )   
 	{
 		if (lhs.current_node == rhs.current_node)
 			return false;

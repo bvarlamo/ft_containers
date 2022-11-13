@@ -279,6 +279,11 @@ namespace	ft
 				std::swap(_comp, x._comp);
 				_tree.swap(x._tree);
 			}
+
+			allocator_type get_allocator() const
+			{
+				return (_alloc);
+			}
 	};
 
 	template< class Key, class T, class Compare, class Alloc >
