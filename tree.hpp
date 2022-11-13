@@ -75,7 +75,7 @@ namespace ft
 			typedef Compare											key_compare;
 			typedef ft::node_d<value_type>							node;
 			typedef ft::tree_iterator<node, value_type>				iterator;
-			typedef ft::tree_const_iterator<node, value_type>		const_iterator;
+			typedef ft::tree_iterator<node, const value_type>		const_iterator;
 			typedef ft::reverse_iterator<iterator>					reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>			const_reverse_iterator;
 			typedef typename value_type::first_type					key_type;

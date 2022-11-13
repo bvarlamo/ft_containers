@@ -174,8 +174,8 @@ namespace ft
 	template <class Iterator>
 	class reverse_iterator
 	{
-		private:
-			Iterator	_it;
+		// private:
+		// 	Iterator	_it;
 		protected:
 			Iterator	current;
 		public:
@@ -186,19 +186,25 @@ namespace ft
 			typedef typename ft::iterator_traits<Iterator>::pointer				pointer;
 			typedef typename ft::iterator_traits<Iterator>::reference			reference;
 		
-			reverse_iterator() : _it(), current()
+			reverse_iterator() :current()
 			{}
 
-			explicit reverse_iterator (Iterator_type it) : _it(it), current(it)
+			explicit reverse_iterator (Iterator_type it) : current(it)
 			{}
 
 			template <class Iter>  
-			reverse_iterator (const reverse_iterator<Iter>& rev_it) : _it(rev_it.base()), current(rev_it.base())
+			reverse_iterator (const reverse_iterator<Iter>& rev_it) : current(rev_it.base())
 			{}
 
 			Iterator_type base() const
 			{
 				return (current);
+			}
+
+			reverse_iterator& operator=(const reverse_iterator& src) 
+			{
+				current = src.base();
+				return *this;
 			}
 
 			reverse_iterator& operator ++ ()              
@@ -316,10 +322,10 @@ namespace ft
 		return ft::reverse_iterator<Iter>(it.base() - n);
 	}
 
-	template< class Iterator >
-	typename ft::reverse_iterator<Iterator>::difference_type
-    operator-( const reverse_iterator<Iterator>& lhs,
-               const reverse_iterator<Iterator>& rhs )
+	template< class Iterator1, class Iterator2 >
+	typename ft::reverse_iterator<Iterator1>::difference_type
+    operator-( const ft::reverse_iterator<Iterator1>& lhs,
+               const ft::reverse_iterator<Iterator2>& rhs )
 	{
 		return rhs.base() - lhs.base();
 	}
