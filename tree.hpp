@@ -14,19 +14,16 @@ namespace ft
 		typedef T		value_type;
 		value_type		data;
 		bool			isred;
-		// typedef typename std::allocator<value_type>::template rebind<node_d>::other	node_alloc;
 
 		node_d*		left;
 		node_d*		right;
 		node_d*		p;
-		// node_alloc	n_alloc;
 
 		node_d(value_type val, node_d* parent) : data(val), p(parent)
 		{
 			left = NULL;
 			right = NULL;
 			isred = true;
-			// n_alloc = all;
 		}
 
 		node_d(node_d* parent) : data()
@@ -35,31 +32,10 @@ namespace ft
 			right = NULL;
 			isred = false;
 			p = parent;
-			// n_alloc = all;
 		}
-
-		// node_d(const node_d& x)
-		// {
-		// 	data = x.data;
-		// 	left = x.left;
-		// 	right = x.right;
-		// 	isred = x.isred;
-		// 	p = x.p;
-		// 	n_alloc = x.n_alloc;
-		// }
 
 		~node_d()
 		{
-			// if (left)
-			// {
-			// 	n_alloc.destroy(left);
-			// 	n_alloc.deallocate(left, 1);
-			// }
-			// if (right)
-			// {
-			// 	n_alloc.destroy(right);
-			// 	n_alloc.deallocate(right, 1);
-			// }
 		}
 	};
 
@@ -96,7 +72,7 @@ namespace ft
 			{
 				clear_node(root);
 			}
-			
+
 			tree()
 			{
 				root = NULL;
@@ -280,7 +256,14 @@ namespace ft
 			std::size_t erase (const key_type& k)
 			{
 				current = &root;
-				while ((*current)->left != NULL)
+				if (_size == 1 && (*current)->data.first == k)
+				{
+					clear_node(root);
+					root = NULL;
+					_size = 0;
+					return (1);
+				}
+				while ((*current) && (*current)->left != NULL)
 				{
 					if ((*current)->left && (*current)->data.first == k)
 					{
@@ -289,12 +272,23 @@ namespace ft
 						_size--;
 						return (1);
 					}
-					else if (_comp((*current)->data.first, k))
-						current = &(*current)->right;
-					else
+					else if (_comp(k, (*current)->data.first))
 						current = &(*current)->left;
+					else
+						current = &(*current)->right;
 				}
 				return (0);
+			}
+			void erase (iterator first, iterator last)
+			{
+				iterator tmp = first;
+				iterator t = first;
+				while (tmp != last)
+				{
+					tmp++;
+					erase(t->first);
+					t = tmp;
+				}
 			}
 
 			node* insert_fixup(node* z)
@@ -410,10 +404,10 @@ namespace ft
 					p = *current;
 					if ((*current)->left && (*current)->data.first == val.first)
 						return(ft::pair<iterator, bool>((iterator(&*(*current))), false));
-					else if (_comp((*current)->data.first, val.first))
-						current = &(*current)->right;
-					else
+					else if (_comp(val.first, (*current)->data.first))
 						current = &(*current)->left;
+					else
+						current = &(*current)->right;
 				}
 				n_alloc.destroy(*current);
 				n_alloc.deallocate(*current, 1);
@@ -518,10 +512,10 @@ namespace ft
 				{
 					if ((*current)->left && (*current)->data.first == k)
 						return((*current)->data.second);
-					else if (_comp((*current)->data.first, k))
-						current = &(*current)->right;
-					else
+					else if (_comp(k, (*current)->data.first))
 						current = &(*current)->left;
+					else
+						current = &(*current)->right;
 				}
 				throw std::out_of_range("Dont have this key");
 			}
@@ -533,10 +527,10 @@ namespace ft
 				{
 					if ((*current)->left && (*current)->data.first == k)
 						return((*current)->data.second);
-					else if (_comp((*current)->data.first, k))
-						current = &(*current)->right;
-					else
+					else if (_comp(k, (*current)->data.first))
 						current = &(*current)->left;
+					else
+						current = &(*current)->right;
 				}
 				throw std::out_of_range("Dont have this key");
 			}
@@ -549,14 +543,14 @@ namespace ft
 			std::size_t count( const key_type& key ) const
 			{
 				node*	tmp = root;
-				while (tmp->left != NULL)
+				while (tmp && tmp->left != NULL)
 				{
 					if (tmp->left && tmp->data.first == key)
 						return(1);
-					else if (_comp(tmp->data.first, key))
-						tmp = tmp->right;
-					else
+					else if (_comp(key, tmp->data.first))
 						tmp = tmp->left;
+					else
+						tmp = tmp->right;
 				}
 				return 0;
 			}
@@ -568,10 +562,10 @@ namespace ft
 				{
 					if (tmp->left && tmp->data.first == key)
 						return(iterator(tmp));
-					else if (_comp(tmp->data.first, key))
-						tmp = tmp->right;
-					else
+					else if (_comp(key, tmp->data.first))
 						tmp = tmp->left;
+					else
+						tmp = tmp->right;
 				}
 				return (end());
 			}
@@ -583,10 +577,10 @@ namespace ft
 				{
 					if (tmp->left && tmp->data.first == key)
 						return(const_iterator(tmp));
-					else if (_comp(tmp->data.first, key))
-						tmp = tmp->right;
-					else
+					else if (_comp(key, tmp->data.first))
 						tmp = tmp->left;
+					else
+						tmp = tmp->right;
 				}
 				return (end());
 			}
@@ -600,10 +594,10 @@ namespace ft
 					pr = tmp;
 					if (tmp->left && tmp->data.first == key)
 						return(iterator(tmp));
-					else if (_comp(tmp->data.first, key))
-						tmp = tmp->right;
-					else
+					else if (_comp(key, tmp->data.first))
 						tmp = tmp->left;
+					else
+						tmp = tmp->right;
 				}
 				iterator t(pr);
 				if (&*t == &*(end()))
@@ -623,10 +617,10 @@ namespace ft
 					pr = tmp;
 					if (tmp->left && tmp->data.first == key)
 						return(const_iterator(tmp));
-					else if (_comp(tmp->data.first, key))
-						tmp = tmp->right;
-					else
+					else if (_comp(key, tmp->data.first))
 						tmp = tmp->left;
+					else
+						tmp = tmp->right;
 				}
 				const_iterator t(pr);
 				if (&*t == &*(end()))
@@ -650,10 +644,10 @@ namespace ft
 						t++;
 						return (t);
 					}
-					else if (_comp(tmp->data.first, key))
-						tmp = tmp->right;
-					else
+					else if (_comp(key, tmp->data.first))
 						tmp = tmp->left;
+					else
+						tmp = tmp->right;
 				}
 				iterator t(pr);
 				if (&*t == &*(end()))
@@ -677,10 +671,10 @@ namespace ft
 						t++;
 						return (t);
 					}
-					else if (_comp(tmp->data.first, key))
-						tmp = tmp->right;
-					else
+					else if (_comp(key, tmp->data.first))
 						tmp = tmp->left;
+					else
+						tmp = tmp->right;
 				}
 				const_iterator t(pr);
 				if (&*t == &*(end()))

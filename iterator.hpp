@@ -111,7 +111,7 @@ namespace ft
 
 			reference operator[](difference_type n) const 
 			{
-				return *(ptr + n);
+				return (ptr[n]);
 			}
 		};
 		template<typename A, typename B>

@@ -43,7 +43,7 @@ namespace	ft
 
 				class value_compare : public std::binary_function<value_type, value_type, bool>
 				{
-					friend class map;
+					friend class map<key_type, mapped_type, key_compare, Allocator>;
 
 					protected:
 						Compare comp;
@@ -59,18 +59,17 @@ namespace	ft
 						return comp(x.first, y.first);
 					}
 				};
+		
 
 			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
 			{
-				// _tree();
 				_comp = comp;
 				_alloc = alloc;
 			}
 
 			template< class InputIt >
-			map( InputIt first, InputIt last, const Compare& comp = Compare(), const Allocator& alloc = Allocator() )
+			map( InputIt first, InputIt last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
 			{
-				// _tree();
 				_comp = comp;
 				_alloc = alloc;
 				InputIt tmp = first;
@@ -83,7 +82,6 @@ namespace	ft
 
 			map (const map& x)
 			{
-				// _tree();
 				_tree.insert(x.begin(), x.end());
 			}
 
@@ -104,14 +102,7 @@ namespace	ft
 
 			void erase (iterator first, iterator last)
 			{
-				iterator tmp = first;
-				iterator t = first;
-				while (tmp != last)
-				{
-					tmp++;
-					_tree.erase(t->first);
-					t = tmp;
-				}
+				_tree.erase(first, last);
 			}
 
 			iterator begin()
@@ -175,7 +166,6 @@ namespace	ft
 
 			bool empty() const
 			{
-				// return !_size;
 				return (_tree.empty());
 			}
 

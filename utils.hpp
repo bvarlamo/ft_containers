@@ -64,6 +64,36 @@ namespace ft
 namespace ft
 {
 	template <bool var, class T >
+	struct is_tag
+	{
+		static const bool	value = var;
+		typedef T			type;
+	};
+	template < typename >
+	struct tag_type : public is_tag< false, bool > {};
+
+	template <>
+	struct tag_type<std::random_access_iterator_tag> : public is_tag< true, std::random_access_iterator_tag > {};
+
+	template <>
+	struct tag_type<std::bidirectional_iterator_tag> : public is_tag< true, std::bidirectional_iterator_tag > {};
+
+	template <>
+	struct tag_type<std::forward_iterator_tag> : public is_tag< true, std::forward_iterator_tag > {};
+
+	template <>
+	struct tag_type<std::input_iterator_tag> : public is_tag< true, std::input_iterator_tag > {};
+
+	template <>
+	struct tag_type<std::output_iterator_tag> : public is_tag< true, std::output_iterator_tag > {};
+
+	template <typename T>
+		struct is_tags : public tag_type<T> { };
+}
+
+namespace ft
+{
+	template <bool var, class T >
 	struct is_integral
 	{
 		static const bool	value = var;
@@ -155,7 +185,7 @@ namespace ft
         typedef T*            						pointer;
         typedef T&            						reference;
         typedef std::ptrdiff_t						difference_type;
-		typedef ft::random_access_iterator_tag		iterator_category;
+		typedef std::random_access_iterator_tag		iterator_category;
     };
 
 	template <class T>
@@ -165,7 +195,7 @@ namespace ft
 		typedef T									value_type;
         typedef const T*            				pointer;
         typedef const T&            				reference;
-		typedef ft::random_access_iterator_tag		iterator_category;
+		typedef std::random_access_iterator_tag		iterator_category;
     };
 }
 
@@ -174,8 +204,6 @@ namespace ft
 	template <class Iterator>
 	class reverse_iterator
 	{
-		// private:
-		// 	Iterator	_it;
 		protected:
 			Iterator	current;
 		public:

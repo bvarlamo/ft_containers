@@ -6,7 +6,7 @@
 /*   By: bvarlamo <bvarlamo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 09:28:09 by bvarlamo          #+#    #+#             */
-/*   Updated: 2022/11/13 18:59:49 by bvarlamo         ###   ########.fr       */
+/*   Updated: 2022/11/15 13:03:46 by bvarlamo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,7 @@ namespace	ft
 			typedef T											value_type;
 			typedef Allocator									allocator_type;
 			typedef typename allocator_type::size_type			size_type;
-			// typedef typename allocator_type::difference_type	difference_type;
-			typedef typename ft::iterator_traits<T*>::difference_type	difference_type;
+			typedef typename allocator_type::difference_type	difference_type;
 			typedef value_type&									reference;
 			typedef const value_type&							const_reference;
 			typedef typename allocator_type::pointer			pointer;
@@ -44,13 +43,29 @@ namespace	ft
 			std::size_t									_size;
 			std::size_t									_capacity;
 			allocator_type								_alloc;
+
+			template<class InputIt>
+			bool validate_iterator_values(InputIt first, InputIt last, size_t range) 
+			{
+				pointer reserved_buffer;
+				reserved_buffer = _alloc.allocate(range);
+				bool result = true;
+				size_t i = 0;
+
+				for (;first != last; ++first, ++i) {
+					try { reserved_buffer[i] = *first; }
+					catch (...) { result = false; break; }
+				}
+				_alloc.deallocate(reserved_buffer, range);
+				return result;
+			}
 			
 		public:
 			explicit vector(const allocator_type& alloc = allocator_type())
 			{
 				_alloc = alloc;
 				_data = _alloc.allocate(0);
-				// _end = end();
+				_end = _data;
 				_size = 0;
 				_capacity = 0;
 			}
@@ -83,27 +98,23 @@ namespace	ft
 			
 			template <class InputIterator> 
 			vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(), 
-			typename ft::enable_if<!ft::is_integrals<InputIterator>::value, InputIterator>::type* = nullptr)
+			typename ft::enable_if<!ft::is_integrals<InputIterator>::value, InputIterator>::type* = 0)
 			{
 				_alloc = alloc;
-				difference_type n = 0;
-				while (&first[n] != &*last)
-				{
-					n++;
-				}
-				_data = _alloc.allocate(n);
+				InputIterator it = first;
 				_size = 0;
-				_capacity = n;
-				_end = _data;
-				while (n--)
+				while (it != last)
 				{
-					_alloc.construct(_end, *first);
-					_end++;
-					first++;
+					it++;
 					_size++;
 				}
-
-				// range constructer
+				_capacity = _size;
+				_data = _alloc.allocate(_capacity);
+				for (size_type i = 0; i < _size; i++)
+				{
+					_alloc.construct(&_data[i], *first);
+					first++;
+				}
 			}
 
 			~vector()
@@ -117,8 +128,7 @@ namespace	ft
 				
 				clear();
 				_alloc.deallocate(_data, _capacity);
-				_alloc = x.get_allocator();
-				_data = _alloc.allocate(_capacity);
+				_data = _alloc.allocate(x.capacity());
 				_end = _data;
 				_size = x.size();
 				_capacity = x.capacity();
@@ -129,12 +139,12 @@ namespace	ft
 	
 			void push_back(const T& value)
 			{
-				if (_size == _capacity)
+				if (_size >= _capacity)
 				{
 					_capacity = (_capacity) ? (_capacity * 2) : 1;
 					T* new_data = _alloc.allocate(_capacity);
 					for (size_type i = 0; i < _size; ++i)
-						new_data[i] = _data[i];
+						_alloc.construct(&new_data[i], _data[i]);
 					size_type new_size = _size;
 					size_type new_capacity = _capacity;
 					if (_data)
@@ -179,12 +189,17 @@ namespace	ft
 				_end = _data;
 				if (count == 0)
 					return (iterator(&_end[index]));
-				if (count > this->max_size())
-					throw (std::length_error("count to big"));
+				if (count < 0 || count > this->max_size())
+					throw (std::length_error("wrong count"));
 				else
 				{
 					if (_size + count > _capacity)
+					{
+						// size_type c = _capacity;
+						// while (c < (_size + count))
+						// 	c = (c) ? (c * 2) : 1;
 						reserve(_size + count);
+					}
 					size_type i = (static_cast<size_type> (index));
 					size_type s = _size + count - 1;
 					size_type t = _size - i;
@@ -198,16 +213,10 @@ namespace	ft
 					}
 					while (count > 0)
 					{
-						// _end = _data;
-						// insert(&_end[index], value);
-						// if (t > 0)
-						// 	_alloc.construct(&_data[s], _data[index]);
 						_alloc.construct(&_data[index], value);
 						index++;
 						count--;
 						_size++;
-						// s++;
-						// t--;
 					}
 				}
 				return (iterator(&_data[index - count]));
@@ -217,17 +226,35 @@ namespace	ft
 			iterator insert( const_iterator pos, InputIt first, InputIt last, 
 			typename ft::enable_if<!ft::is_integrals<InputIt>::value, InputIt>::type* = nullptr)
 			{
-				if (pos < begin() || pos > end() || first > last)
+				// size_t range_size = 0;
+				// InputIt ii = first;
+				// while (ii != last)
+				// {
+				// 	range_size++;
+				// 	ii++;
+				// }
+				// if (!validate_iterator_values(first, last, range_size))
+				// 	throw std::exception();
+				if (pos < begin() || pos > end())
 					throw std::logic_error("vector");
 				difference_type index = pos - begin();
+				_end = _data;
 				if (first == last)
 					return iterator(&_end[index]);
 				InputIt it = first;
-				size_type i = static_cast<size_type>(last - it);
-				// size_type count = (static_cast<size_type> (index)) + i;
-				// size_type t = _size - (static_cast<size_type> (index));
+				size_type i = 0;
+				while (it != last)
+				{
+					it++;
+					i++;
+				}
 				if (_size + i > _capacity)
-					reserve(_size + i);
+				{
+					size_type c = _capacity;
+					while (c < (_size + i))
+						c = (c) ? (c * 2) : 1;
+					reserve(c);
+				}
 				size_type in = (static_cast<size_type> (index));
 				size_type s = _size + i - 1;
 				size_type t = _size - in;
@@ -239,16 +266,13 @@ namespace	ft
 					t--;
 					ss--;
 				}
+				it = first;
 				while (it != last)
 				{
-					// if (t > 0)
-					// 	_alloc.construct(&_data[count], _data[index]);
 					_alloc.construct(&_data[index], *it);
 					index++;
 					it++;
 					_size++;
-					// t--;
-					// count++;
 				}
 				return (iterator(&_data[pos - begin()]));
 			}
@@ -285,7 +309,7 @@ namespace	ft
 
 			const_reverse_iterator rbegin() const
 			{
-				const_reverse_iterator it(end() - 1);
+				const_reverse_iterator it(end());
 				return(it);
 			}
 			
@@ -318,7 +342,7 @@ namespace	ft
 
 			reference operator[]( size_type pos )
 			{
-				iterator it = _data;
+				iterator it(_data);
 				for (size_type i = 0; i != pos; i++)
 					it++;
 				return (*it);
@@ -326,10 +350,7 @@ namespace	ft
 
 			const_reference operator[]( size_type pos ) const
 			{
-				iterator it = _data;
-				for (size_type i = 0; i != pos; i++)
-					it++;
-				return (*it);
+				return (_data[pos]);
 			}
 	
 			void resize (size_type n, value_type val = value_type())
@@ -347,7 +368,12 @@ namespace	ft
 				else if (n > _size)
 				{
 					if (n > _capacity)
-						reserve(n);
+					{
+						size_type c = _capacity;
+						while (c < n)
+							c = (c) ? (c * 2) : 1;
+						reserve(c);
+					}
 					while (_size < n)
 					{
 						_alloc.construct(&_data[_size], val);
@@ -450,27 +476,21 @@ namespace	ft
 			typename ft::enable_if<!ft::is_integrals<InputIterator>::value, InputIterator>::type* = nullptr)
 			{
 				clear();
+				_size = 0;
 				InputIterator it = first;
 				size_type i = 0;
-				_end = _data;
 				while (it != last)
 				{
-					if (&*it == &_end[i] || &*last == &_end[i])
-						return ;
 					i++;
 					it++;
 				}
 				if (_capacity < i)
 				{
-					_alloc.deallocate(_data, _capacity);
-					_data = _alloc.allocate(i);
-					_capacity = i;
+					reserve(i);
 				}
-				_end = _data;
 				while (first != last)
 				{
-					_alloc.construct(_end, *first);
-					_end++;
+					_alloc.construct(&_data[_size], *first);
 					first++;
 					_size++;
 				}
