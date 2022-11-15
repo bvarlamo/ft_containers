@@ -6,7 +6,7 @@
 #    By: bvarlamo <bvarlamo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/04 09:53:27 by bvarlamo          #+#    #+#              #
-#    Updated: 2022/11/15 12:49:04 by bvarlamo         ###   ########.fr        #
+#    Updated: 2022/11/15 17:06:24 by bvarlamo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ FLAGS = -Wall -Werror -Wextra -std=c++98
 
 RM = rm -f
 
-SRC = tester_map.cpp 
+SRC = main.cpp 
 
 OBJ = $(SRC:.cpp=.o)
 

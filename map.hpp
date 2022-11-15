@@ -84,6 +84,10 @@ namespace	ft
 			{
 				_tree.insert(x.begin(), x.end());
 			}
+			~map()
+			{
+
+			}
 
 			ft::pair<iterator,bool> insert (const value_type& val)
 			{

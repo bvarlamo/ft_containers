@@ -1,0 +1,7 @@
+13,16c13
+< value: 12set::find(3) returned end()
+< set::find(35) returned end()
+< value: 90set::find(100) returned end()
+< 	-- COUNT --
+---
+> value: 12value: 0value: 0value: 90value: 0	-- COUNT --
