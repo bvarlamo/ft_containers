@@ -6,7 +6,7 @@
 /*   By: bvarlamo <bvarlamo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 09:28:09 by bvarlamo          #+#    #+#             */
-/*   Updated: 2022/11/15 13:03:46 by bvarlamo         ###   ########.fr       */
+/*   Updated: 2022/11/16 11:29:57 by bvarlamo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -250,10 +250,10 @@ namespace	ft
 				}
 				if (_size + i > _capacity)
 				{
-					size_type c = _capacity;
-					while (c < (_size + i))
-						c = (c) ? (c * 2) : 1;
-					reserve(c);
+					// size_type c = _capacity;
+					// while (c < (_size + i))
+					// 	c = (c) ? (c * 2) : 1;
+					reserve(_size + i);
 				}
 				size_type in = (static_cast<size_type> (index));
 				size_type s = _size + i - 1;
@@ -369,10 +369,10 @@ namespace	ft
 				{
 					if (n > _capacity)
 					{
-						size_type c = _capacity;
-						while (c < n)
-							c = (c) ? (c * 2) : 1;
-						reserve(c);
+						// size_type c = _capacity;
+						// while (c < n)
+						// 	c = (c) ? (c * 2) : 1;
+						reserve(n);
 					}
 					while (_size < n)
 					{
